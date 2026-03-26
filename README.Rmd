@@ -1,0 +1,36 @@
+---
+title: "README"
+author: "Joe Matthews"
+date: "2026-03-23"
+output: html_document
+---
+
+## Overview
+
+RAPTOR Hotspot analyses traffic collision data and provides predicted collision counts in a future time period.
+
+### Data Upload
+
+RAPTOR takes input data in the classic ''tidy'' format, where each row corresponds to a single observation of a single site in a single year. The columns include:
+
+* The site ID
+* The year
+* The collision count
+
+Additional columns provide predictor variables for the global spf model, these can be anything but typically include variables like speed limit, road class, urban/rural etc.
+
+In the data upload section the user selects which columns correspond to the ID, year and collision count variables.
+
+## Site selection
+
+In the site selection window, the user selects whether they wish to analyse all sites (shown by their IDs) in the data, or just a list
+
+## Simulation Settings
+
+In the simulation settings section, we define how long to run the MCMC chain for, as well as the number of burn in iterations. There is then a "Run" button which triggers the MCMC chain to run.
+The MCMC chain uses JAGS and is provided in the `modelscript.R` file.
+
+## Results
+
+In the results window, the user is provided with a table of summaries of the predicted collision count in the next year. When clicked it shows a time series plot of counts over time, with a line showing the Poisson mean over time with ribbon showing 95\% credible intervals, and a separate line showing the fitted SPF values.
+The site warnings window allows the user to input a threshold value, and receive a colour coded list giving the probability of each site exceeding that threshold (as determined by the posterior predictive distribution for the future count from the MCMC).

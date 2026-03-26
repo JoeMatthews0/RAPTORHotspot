@@ -1,0 +1,649 @@
+library(shiny)
+library(MASS)
+library(dplyr)
+library(ggplot2)
+library(DT)
+library(rjags)
+
+MODELSTRING <- "
+  model {
+    for (i in 1:n_past) {
+      y[i] ~ dnegbin(1 / c[i], lambda[i] / (c[i] - 1))
+      lambda[i] <- exp(log(mu[i]) + sigma + (alpha * year[i]))
+      c[i] <- exp(-year[i] * tau)
+    }
+    y[n_past + 1] ~ dpois(lambda[n_past + 1])
+    lambda[n_past + 1] <- exp(log(mu[n_past + 1]) + sigma)
+    pred ~ dnegbin(1 / exp(tau), lambda_pred / exp(tau))
+    lambda_pred <- exp(log(predmu) + sigma + alpha)
+    sigma ~ dnorm(0, 0.1)
+    alpha <- alpha_n * alpha_z
+    alpha_n ~ dnorm(0, 1)
+    alpha_z ~ dbern(p)
+    p ~ dunif(0, 1)
+    tau ~ dgamma(2, 20)
+  }
+"
+
+# ---- UI -------------------------------------------------------------------
+
+ui <- navbarPage(
+  title = "RAPTOR Hotspot",
+  id    = "mainNav",
+  header = tags$head(
+    tags$style(HTML("
+      .navbar-default { background-color: #2c3e50; border-color: #1a252f; }
+      .navbar-default .navbar-brand { color: #fff; }
+      .navbar-default .navbar-nav > li > a { color: #ccc; }
+      .navbar-default .navbar-nav > .active > a,
+      .navbar-default .navbar-nav > .active > a:hover,
+      .navbar-default .navbar-nav > .active > a:focus {
+        background-color: #e1202b !important; color: #fff !important; }
+      .navbar-default .navbar-nav > li > a:hover { color: #fff; background-color: #3d5166; }
+      body { padding-top: 70px; font-size: 14px; }
+      .status-ok   { color: #27ae60; font-weight: bold; }
+      .status-warn { color: #e67e22; font-weight: bold; }
+      .status-err  { color: #c0392b; font-weight: bold; }
+      .well { border-radius: 4px; }
+      pre { background: #f8f8f8; font-size: 12px; max-height: 300px; overflow-y: auto; }
+    "))
+  ),
+
+  # Introduction ------------------------------------------------------------
+  tabPanel("Introduction",
+    fluidPage(fluidRow(column(8, offset = 2,
+      br(),
+      h2("RAPTOR Hotspot Identification"),
+      p(class = "lead",
+        "Traffic collision hotspot prediction using Bayesian hierarchical modelling."),
+      hr(),
+      h4("Overview"),
+      p("RAPTOR Hotspot analyses traffic collision data and provides predicted collision
+        counts in a future time period. It fits a global Safety Performance Function (SPF)
+        via a negative binomial GLM across all sites, then runs a Bayesian per-site MCMC
+        model (using JAGS) to capture site-specific intercept offsets, temporal trends,
+        and overdispersion."),
+      h4("Workflow"),
+      tags$ol(
+        tags$li(strong("Data Upload — "), "Upload a CSV and map columns to site ID, year,
+                and collision count. All remaining numeric columns become SPF predictors."),
+        tags$li(strong("Site Selection — "), "Choose which sites to include in the analysis."),
+        tags$li(strong("Simulation Settings — "), "Set MCMC parameters and click Run."),
+        tags$li(strong("Results — "), "View predicted counts for the next year. Click any
+                row to see that site's time-series with fitted Poisson mean and SPF."),
+        tags$li(strong("Site Warnings — "), "Set a threshold count to get a colour-coded
+                exceedance probability list.")
+      ),
+      h4("Data Format"),
+      p("Tidy format: one row per site per year. Required columns:"),
+      tags$ul(
+        tags$li("Site ID — unique location identifier"),
+        tags$li("Year — numeric year or time index"),
+        tags$li("Collision count — non-negative integer")
+      ),
+      p("All other numeric columns are treated as SPF predictor variables."),
+      hr(),
+      tags$small(class = "text-muted",
+        "Requires JAGS (", tags$a("mcmc-jags.sourceforge.net",
+          href = "https://mcmc-jags.sourceforge.net"), ") to be installed.")
+    )))
+  ),
+
+  # Data Upload -------------------------------------------------------------
+  tabPanel("Data Upload",
+    fluidPage(br(), fluidRow(
+      column(4, wellPanel(
+        h4("Upload Data"),
+        fileInput("dataFile", "Choose CSV File",
+                  accept = c("text/csv", ".csv"), placeholder = "No file selected"),
+        checkboxInput("hasHeader", "File has header row", value = TRUE),
+        selectInput("sep", "Column separator:",
+                    choices = c(Comma = ",", Semicolon = ";", Tab = "\t"), selected = ","),
+        hr(),
+        h4("Column Mapping"),
+        selectInput("idCol",    "Site ID column:",       choices = NULL),
+        selectInput("yearCol",  "Year column:",          choices = NULL),
+        selectInput("countCol", "Collision count column:", choices = NULL),
+        actionButton("validateBtn", "Validate Selection",
+                     class = "btn-primary btn-block"),
+        br(),
+        uiOutput("validationStatus")
+      )),
+      column(8,
+        h4("Data Preview"),
+        p(class = "text-muted", "First 20 rows"),
+        DTOutput("dataPreview")
+      )
+    ))
+  ),
+
+  # Site Selection ----------------------------------------------------------
+  tabPanel("Site Selection",
+    fluidPage(br(), fluidRow(
+      column(4, wellPanel(
+        h4("Select Sites to Analyse"),
+        fluidRow(
+          column(6, actionButton("selectAllBtn", "Select All",
+                                 class = "btn-info btn-sm btn-block")),
+          column(6, actionButton("clearAllBtn",  "Clear All",
+                                 class = "btn-warning btn-sm btn-block"))
+        ),
+        br(),
+        uiOutput("siteCheckboxes")
+      )),
+      column(8,
+        h4("Collision Trends"),
+        p(class = "text-muted", "Observed counts over time for selected sites."),
+        plotOutput("collisionTrends", height = "420px")
+      )
+    ))
+  ),
+
+  # Simulation Settings -----------------------------------------------------
+  tabPanel("Simulation Settings",
+    fluidPage(br(), fluidRow(
+      column(4, wellPanel(
+        h4("MCMC Settings"),
+        numericInput("nAdapt",  "Adaptation iterations:",       value = 1000,  min = 100,  max = 10000, step = 100),
+        numericInput("nBurnin", "Burn-in iterations:",          value = 2000,  min = 100,  max = 50000, step = 500),
+        numericInput("nIter",   "Sampling iterations per site:", value = 10000, min = 1000, max = 100000, step = 1000),
+        numericInput("nThin",   "Thinning factor:",              value = 5,     min = 1,    max = 50,    step = 1),
+        hr(),
+        actionButton("runBtn", "Run Model",
+                     class = "btn-success btn-lg btn-block",
+                     icon  = icon("play")),
+        br(), br(),
+        uiOutput("runStatus")
+      )),
+      column(8,
+        h4("Pre-flight Checks"),
+        uiOutput("preflightChecks"),
+        br(),
+        h4("Model Log"),
+        verbatimTextOutput("mcmcLog")
+      )
+    ))
+  ),
+
+  # Results -----------------------------------------------------------------
+  tabPanel("Results",
+    fluidPage(br(),
+      fluidRow(column(12,
+        h4("Predicted Collision Counts — Next Year"),
+        p(class = "text-muted", "Click any row to view the time-series plot for that site."),
+        DTOutput("resultsTable"),
+        br(),
+        downloadButton("downloadResults", "Download as CSV", class = "btn-sm btn-default")
+      )),
+      br(),
+      conditionalPanel("output.siteSelected == true",
+        fluidRow(column(12,
+          hr(),
+          h4(textOutput("plotTitle")),
+          plotOutput("timeSeriesPlot", height = "420px")
+        ))
+      )
+    )
+  ),
+
+  # Site Warnings -----------------------------------------------------------
+  tabPanel("Site Warnings",
+    fluidPage(br(), fluidRow(
+      column(4, wellPanel(
+        h4("Warning Threshold"),
+        numericInput("threshold", "Collision count threshold:", value = 10, min = 0, step = 1),
+        helpText("Sites are colour-coded by the posterior probability that predicted
+                 collisions in the next year exceed this threshold."),
+        hr(),
+        div(style = "padding:8px;margin-bottom:4px;background:#e74c3c;border-radius:3px;color:white;",
+            icon("exclamation-triangle"), " High risk  — P > 0.5"),
+        div(style = "padding:8px;margin-bottom:4px;background:#f39c12;border-radius:3px;",
+            icon("exclamation"), " Medium risk — 0.2 < P \u2264 0.5"),
+        div(style = "padding:8px;background:#27ae60;border-radius:3px;color:white;",
+            icon("check"), " Low risk    — P \u2264 0.2")
+      )),
+      column(8,
+        h4("Site Warning List"),
+        p(class = "text-muted", "Sorted by exceedance probability (highest first)."),
+        DTOutput("warningsTable")
+      )
+    ))
+  )
+)
+
+# ---- Server ---------------------------------------------------------------
+
+server <- function(input, output, session) {
+
+  rv <- reactiveValues(
+    rawData      = NULL,
+    glmModel     = NULL,
+    mcmcResults  = NULL,
+    selectedSite = NULL,
+    mcmcLog      = ""
+  )
+
+  # Data Upload -----------------------------------------------------------
+
+  observeEvent(input$dataFile, {
+    req(input$dataFile)
+    tryCatch({
+      df <- read.csv(input$dataFile$datapath,
+                     header           = input$hasHeader,
+                     sep              = input$sep,
+                     stringsAsFactors = FALSE)
+      rv$rawData <- df
+      cols <- colnames(df)
+      id_g  <- grep("^id$|site|location", cols, ignore.case = TRUE, value = TRUE)
+      yr_g  <- grep("^year$|time|period",  cols, ignore.case = TRUE, value = TRUE)
+      cnt_g <- grep("accident|collision|crash|count", cols, ignore.case = TRUE, value = TRUE)
+      updateSelectInput(session, "idCol",    choices = cols,
+                        selected = if (length(id_g))  id_g[1]  else cols[1])
+      updateSelectInput(session, "yearCol",  choices = cols,
+                        selected = if (length(yr_g))  yr_g[1]  else cols[min(2, length(cols))])
+      updateSelectInput(session, "countCol", choices = cols,
+                        selected = if (length(cnt_g)) cnt_g[1] else cols[min(3, length(cols))])
+    }, error = function(e) {
+      showNotification(paste("Error reading file:", e$message), type = "error", duration = 8)
+    })
+  })
+
+  output$dataPreview <- renderDT({
+    req(rv$rawData)
+    datatable(head(rv$rawData, 20),
+              options = list(scrollX = TRUE, pageLength = 10, dom = "tip"),
+              rownames = FALSE)
+  })
+
+  # Validation ------------------------------------------------------------
+
+  validResult <- reactiveVal(NULL)
+
+  observeEvent(input$validateBtn, {
+    req(rv$rawData, input$idCol, input$yearCol, input$countCol)
+    df  <- rv$rawData
+    idc <- input$idCol; yrc <- input$yearCol; cnc <- input$countCol
+    errs  <- character(0)
+    warns <- character(0)
+
+    if (length(unique(c(idc, yrc, cnc))) < 3)
+      errs <- c(errs, "Site ID, Year, and Count columns must all be different.")
+    if (!is.numeric(df[[yrc]]))
+      errs <- c(errs, paste0("Year column '", yrc, "' must be numeric."))
+    if (!is.numeric(df[[cnc]]))
+      errs <- c(errs, paste0("Count column '", cnc, "' must be numeric."))
+    if (length(errs) == 0 && any(df[[cnc]] < 0, na.rm = TRUE))
+      errs <- c(errs, "Collision counts cannot be negative.")
+
+    min_per_site <- min(tapply(df[[yrc]], df[[idc]], function(x) length(unique(x))))
+    if (length(errs) == 0 && min_per_site < 2)
+      warns <- c(warns, "Some sites have only 1 time point and will be skipped.")
+
+    pred_num <- setdiff(colnames(df), c(idc, cnc))
+    pred_num <- pred_num[sapply(pred_num, function(co) is.numeric(df[[co]]))]
+    if (length(pred_num) < 1)
+      warns <- c(warns, "No numeric predictor columns found (besides year). SPF may be weak.")
+
+    if (length(errs) == 0) {
+      validResult(list(ok = TRUE, warns = warns,
+                       n_sites = length(unique(df[[idc]])),
+                       n_years = length(unique(df[[yrc]]))))
+    } else {
+      validResult(list(ok = FALSE, errors = errs))
+    }
+  })
+
+  output$validationStatus <- renderUI({
+    res <- validResult()
+    if (is.null(res)) return(NULL)
+    if (res$ok) {
+      tagList(
+        p(class = "status-ok", icon("check-circle"), " Validation passed"),
+        p(paste0("Sites: ", res$n_sites, "  |  Time points: ", res$n_years)),
+        lapply(res$warns, function(w) p(class = "status-warn", icon("warning"), " ", w))
+      )
+    } else {
+      tagList(
+        p(class = "status-err", icon("times-circle"), " Validation failed"),
+        tags$ul(lapply(res$errors, tags$li))
+      )
+    }
+  })
+
+  # Site Selection --------------------------------------------------------
+
+  availSites <- reactive({
+    req(rv$rawData, input$idCol)
+    sort(unique(rv$rawData[[input$idCol]]))
+  })
+
+  output$siteCheckboxes <- renderUI({
+    checkboxGroupInput("selectedSites", label = NULL,
+                       choices = availSites(), selected = availSites())
+  })
+
+  observeEvent(input$selectAllBtn, {
+    updateCheckboxGroupInput(session, "selectedSites", selected = availSites())
+  })
+  observeEvent(input$clearAllBtn, {
+    updateCheckboxGroupInput(session, "selectedSites", selected = character(0))
+  })
+
+  output$collisionTrends <- renderPlot({
+    req(rv$rawData, input$idCol, input$yearCol, input$countCol)
+    sel <- input$selectedSites
+    validate(need(length(sel) > 0, "No sites selected."))
+    df <- rv$rawData[rv$rawData[[input$idCol]] %in% sel, ]
+    df$site_f <- as.factor(df[[input$idCol]])
+    ggplot(df, aes(x = .data[[input$yearCol]], y = .data[[input$countCol]],
+                   group = site_f, colour = site_f)) +
+      geom_line(alpha = 0.6) +
+      geom_point(size = 1.8) +
+      labs(x = "Year", y = "Collision Count", colour = "Site") +
+      theme_minimal(base_size = 13) +
+      theme(legend.position = if (length(sel) > 15) "none" else "right",
+            panel.grid.minor = element_blank())
+  })
+
+  # Pre-flight checks -----------------------------------------------------
+
+  output$preflightChecks <- renderUI({
+    c1 <- if (!is.null(rv$rawData))
+      p(class = "status-ok",  icon("check"), " Data uploaded (", nrow(rv$rawData), " rows)")
+    else
+      p(class = "status-err", icon("times"), " No data uploaded")
+
+    val <- validResult()
+    c2 <- if (!is.null(val) && val$ok)
+      p(class = "status-ok",  icon("check"), " Column mapping validated")
+    else
+      p(class = "status-warn", icon("warning"), " Columns not yet validated (Data Upload tab)")
+
+    n <- length(input$selectedSites)
+    c3 <- if (n > 0)
+      p(class = "status-ok",  icon("check"), " ", n, " site(s) selected")
+    else
+      p(class = "status-err", icon("times"), " No sites selected")
+
+    tagList(c1, c2, c3)
+  })
+
+  # Run Model -------------------------------------------------------------
+
+  observeEvent(input$runBtn, {
+    req(rv$rawData, input$idCol, input$yearCol, input$countCol)
+
+    val <- validResult()
+    if (is.null(val) || !val$ok) {
+      showNotification("Validate column selection first (Data Upload tab).", type = "warning")
+      return()
+    }
+    if (length(input$selectedSites) == 0) {
+      showNotification("Select at least one site.", type = "warning")
+      return()
+    }
+
+    df      <- rv$rawData
+    idc     <- input$idCol
+    yrc     <- input$yearCol
+    cnc     <- input$countCol
+    sites   <- input$selectedSites
+    n_adapt  <- input$nAdapt
+    n_burn   <- input$nBurnin
+    n_iter   <- input$nIter
+    n_thin   <- input$nThin
+
+    # Numeric predictors (exclude ID and count; include year)
+    preds <- setdiff(colnames(df), c(idc, cnc))
+    preds <- preds[sapply(preds, function(co) is.numeric(df[[co]]))]
+
+    if (length(preds) == 0) {
+      showNotification("No numeric predictor columns found.", type = "error")
+      return()
+    }
+
+    glm_form <- as.formula(paste(cnc, "~", paste(preds, collapse = " + ")))
+
+    msgs <- character(0)
+    append_log <- function(msg) {
+      msgs <<- c(msgs, paste0("[", format(Sys.time(), "%H:%M:%S"), "] ", msg))
+      rv$mcmcLog <- paste(msgs, collapse = "\n")
+    }
+
+    withProgress(message = "RAPTOR — Running Analysis", value = 0, {
+
+      # Fit global SPF
+      incProgress(0.05, detail = "Fitting global SPF...")
+      append_log(paste("Fitting SPF:", deparse(glm_form)))
+
+      glm_fit <- tryCatch(
+        glm.nb(glm_form, data = df),
+        error = function(e) {
+          showNotification(paste("SPF fitting failed:", e$message), type = "error", duration = 10)
+          NULL
+        }
+      )
+      if (is.null(glm_fit)) return()
+      rv$glmModel <- glm_fit
+      append_log(paste0("SPF fitted. AIC = ", round(AIC(glm_fit), 1)))
+
+      df$mu_spf <- fitted(glm_fit)
+      results   <- list()
+      n_sites   <- length(sites)
+
+      for (i in seq_along(sites)) {
+        site <- sites[i]
+        incProgress(0.9 / n_sites,
+                    detail = paste0("Site ", site, " (", i, "/", n_sites, ")"))
+
+        sdf <- df[df[[idc]] == site, ]
+        sdf <- sdf[order(sdf[[yrc]]), ]
+        n   <- nrow(sdf)
+
+        if (n < 2) {
+          results[[as.character(site)]] <- list(error = "< 2 observations — skipped")
+          append_log(paste("SKIP", site, "— fewer than 2 obs"))
+          next
+        }
+
+        y_vec    <- sdf[[cnc]]
+        year_vec <- sdf[[yrc]] - max(sdf[[yrc]])
+        mu_vec   <- pmax(sdf$mu_spf, 1e-6)
+
+        yr_coef  <- tryCatch(coef(glm_fit)[yrc], error = function(e) NA_real_)
+        predmu   <- max(if (!is.na(yr_coef)) mu_vec[n] * exp(yr_coef) else mu_vec[n], 1e-6)
+
+        jd <- list(y = y_vec, year = year_vec, mu = mu_vec,
+                   predmu = predmu, n_past = n - 1)
+
+        res <- tryCatch({
+          jm <- jags.model(textConnection(MODELSTRING), data = jd,
+                           n.adapt = n_adapt, quiet = TRUE)
+          update(jm, n.iter = n_burn)
+          samps <- coda.samples(jm, variable.names = c("lambda", "pred"),
+                                n.iter = n_iter, thin = n_thin)
+          smat  <- as.matrix(samps)
+          lnames <- paste0("lambda[", seq_len(n), "]")
+          list(pred_samples   = smat[, "pred"],
+               lambda_samples = smat[, lnames, drop = FALSE],
+               site_df        = sdf,
+               year_vec       = year_vec,
+               mu_vec         = mu_vec,
+               predmu         = predmu,
+               year_col       = yrc,
+               count_col      = cnc,
+               error          = NULL)
+        }, error = function(e) list(error = paste("JAGS:", conditionMessage(e))))
+
+        results[[as.character(site)]] <- res
+        if (!is.null(res$error)) {
+          append_log(paste("ERROR", site, "—", res$error))
+        } else {
+          append_log(paste0("OK ", site, " — mean pred = ",
+                            round(mean(res$pred_samples), 2)))
+        }
+      }
+
+      rv$mcmcResults <- results
+      incProgress(0.05, detail = "Done.")
+    })
+
+    n_ok  <- sum(sapply(rv$mcmcResults, function(x) is.null(x$error)))
+    n_err <- length(rv$mcmcResults) - n_ok
+    showNotification(
+      paste0("Complete. ", n_ok, " site(s) processed",
+             if (n_err > 0) paste0(", ", n_err, " with errors.") else "."),
+      type = if (n_err == 0) "message" else "warning", duration = 6)
+  })
+
+  output$mcmcLog  <- renderText({ rv$mcmcLog })
+
+  output$runStatus <- renderUI({
+    req(rv$mcmcResults)
+    n_ok  <- sum(sapply(rv$mcmcResults, function(x) is.null(x$error)))
+    n_err <- length(rv$mcmcResults) - n_ok
+    tagList(
+      if (n_ok  > 0) p(class = "status-ok",   icon("check"),   " ", n_ok,  " site(s) processed"),
+      if (n_err > 0) p(class = "status-warn",  icon("warning"), " ", n_err, " site(s) with errors")
+    )
+  })
+
+  # Results Table ---------------------------------------------------------
+
+  resultsDF <- reactive({
+    req(rv$mcmcResults)
+    do.call(rbind, lapply(names(rv$mcmcResults), function(s) {
+      r <- rv$mcmcResults[[s]]
+      if (!is.null(r$error)) {
+        data.frame(Site = s, Mean = NA_real_, Median = NA_real_,
+                   Lower95 = NA_real_, Upper95 = NA_real_,
+                   Status = r$error, stringsAsFactors = FALSE)
+      } else {
+        ps <- r$pred_samples
+        data.frame(Site    = s,
+                   Mean    = round(mean(ps),                 2),
+                   Median  = round(median(ps),               2),
+                   Lower95 = round(quantile(ps, 0.025),      2),
+                   Upper95 = round(quantile(ps, 0.975),      2),
+                   Status  = "OK",
+                   stringsAsFactors = FALSE)
+      }
+    }))
+  })
+
+  output$resultsTable <- renderDT({
+    req(resultsDF())
+    datatable(resultsDF(), selection = "single", rownames = FALSE,
+              options  = list(pageLength = 15, scrollX = TRUE, dom = "tip"),
+              colnames = c("Site ID", "Mean", "Median", "Lower 95% CI", "Upper 95% CI", "Status"))
+  })
+
+  output$downloadResults <- downloadHandler(
+    filename = function() paste0("RAPTOR_results_", Sys.Date(), ".csv"),
+    content  = function(file) write.csv(resultsDF(), file, row.names = FALSE)
+  )
+
+  # Time Series Plot ------------------------------------------------------
+
+  observeEvent(input$resultsTable_rows_selected, {
+    idx <- input$resultsTable_rows_selected
+    rv$selectedSite <- if (length(idx) > 0) resultsDF()$Site[idx] else NULL
+  })
+
+  output$siteSelected <- reactive({ !is.null(rv$selectedSite) })
+  outputOptions(output, "siteSelected", suspendWhenHidden = FALSE)
+
+  output$plotTitle <- renderText({
+    req(rv$selectedSite)
+    paste("Time Series — Site:", rv$selectedSite)
+  })
+
+  output$timeSeriesPlot <- renderPlot({
+    req(rv$selectedSite, rv$mcmcResults)
+    key <- as.character(rv$selectedSite)
+    r   <- rv$mcmcResults[[key]]
+    validate(need(!is.null(r),          "No results for this site."))
+    validate(need(is.null(r$error),     paste("Error:", r$error)))
+
+    sdf      <- r$site_df
+    yrc      <- r$year_col
+    cnc      <- r$count_col
+    lam_s    <- r$lambda_samples
+    mu_vec   <- r$mu_vec
+    yr_vals  <- sdf[[yrc]]
+    obs_vals <- sdf[[cnc]]
+
+    lam_mean <- colMeans(lam_s)
+    lam_lo   <- apply(lam_s, 2, quantile, 0.025)
+    lam_hi   <- apply(lam_s, 2, quantile, 0.975)
+
+    hist_df <- data.frame(year = yr_vals, observed = obs_vals,
+                          lam_mean = lam_mean, lam_lo = lam_lo,
+                          lam_hi   = lam_hi,   spf = mu_vec)
+
+    future_yr  <- max(yr_vals) + 1
+    pred_mean  <- mean(r$pred_samples)
+    pred_lo    <- quantile(r$pred_samples, 0.025)
+    pred_hi    <- quantile(r$pred_samples, 0.975)
+    pred_df    <- data.frame(year = future_yr, pred_mean = pred_mean,
+                             pred_lo = pred_lo, pred_hi = pred_hi)
+
+    ggplot(hist_df, aes(x = year)) +
+      geom_ribbon(aes(ymin = lam_lo, ymax = lam_hi), fill = "steelblue", alpha = 0.2) +
+      geom_line(aes(y = lam_mean,  colour = "Fitted Poisson mean"), linewidth = 1) +
+      geom_line(aes(y = spf,       colour = "SPF (global model)"),
+                linetype = "dashed", linewidth = 0.9) +
+      geom_point(aes(y = observed), colour = "black", size = 3) +
+      geom_errorbar(data = pred_df,
+                    aes(x = year, ymin = pred_lo, ymax = pred_hi),
+                    colour = "tomato", width = 0.25, linewidth = 1) +
+      geom_point(data = pred_df, aes(x = year, y = pred_mean),
+                 colour = "tomato", size = 4, shape = 18) +
+      scale_colour_manual(values = c("Fitted Poisson mean" = "steelblue",
+                                     "SPF (global model)"  = "darkorange")) +
+      labs(x = "Year", y = "Collision Count", colour = "",
+           caption = paste0("Red diamond = predicted count for year ", future_yr,
+                            " (95% posterior interval). Shaded ribbon = 95% CI on Poisson mean.")) +
+      theme_minimal(base_size = 13) +
+      theme(legend.position = "bottom", panel.grid.minor = element_blank())
+  })
+
+  # Site Warnings ---------------------------------------------------------
+
+  output$warningsTable <- renderDT({
+    req(rv$mcmcResults, input$threshold)
+    thr <- as.numeric(input$threshold)
+
+    warn_df <- do.call(rbind, lapply(names(rv$mcmcResults), function(s) {
+      r <- rv$mcmcResults[[s]]
+      if (!is.null(r$error)) {
+        data.frame(Site = s, MeanPred = NA_real_, ProbExceed = NA_real_,
+                   Risk = "Error", stringsAsFactors = FALSE)
+      } else {
+        ps <- r$pred_samples
+        pe <- mean(ps > thr)
+        data.frame(Site       = s,
+                   MeanPred   = round(mean(ps), 2),
+                   ProbExceed = round(pe, 3),
+                   Risk       = ifelse(pe > 0.5, "High",
+                                       ifelse(pe > 0.2, "Medium", "Low")),
+                   stringsAsFactors = FALSE)
+      }
+    }))
+    warn_df <- warn_df[order(-warn_df$ProbExceed, na.last = TRUE), ]
+
+    datatable(warn_df, rownames = FALSE, selection = "none",
+              options  = list(pageLength = 15, scrollX = TRUE, dom = "tip"),
+              colnames = c("Site ID", "Mean Predicted",
+                           paste0("P(count > ", thr, ")"), "Risk Level")) |>
+      formatStyle("Risk",
+                  backgroundColor = styleEqual(
+                    c("High",    "Medium",  "Low",     "Error"),
+                    c("#e74c3c", "#f39c12", "#27ae60", "#dddddd")),
+                  color = styleEqual(
+                    c("High",   "Low"),
+                    c("white",  "white"), default = "black"))
+  })
+}
+
+shinyApp(ui = ui, server = server)
