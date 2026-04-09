@@ -14,7 +14,7 @@ MODELSTRING <- "
     }
     y[n_past + 1] ~ dpois(lambda[n_past + 1])
     lambda[n_past + 1] <- exp(log(mu[n_past + 1]) + sigma)
-    pred ~ dnegbin(1 / exp(tau), lambda_pred / exp(tau))
+    pred ~ dnegbin(1 / exp(tau), lambda_pred / (exp(tau) - 1))
     lambda_pred <- exp(log(predmu) + sigma + alpha)
     sigma ~ dnorm(0, 0.1)
     alpha <- alpha_n * alpha_z
@@ -40,12 +40,17 @@ ui <- navbarPage(
       .navbar-default .navbar-nav > .active > a:focus {
         background-color: #e1202b !important; color: #fff !important; }
       .navbar-default .navbar-nav > li > a:hover { color: #fff; background-color: #3d5166; }
-      body { padding-top: 70px; font-size: 14px; }
+      body { font-size: 14px; }
       .status-ok   { color: #27ae60; font-weight: bold; }
       .status-warn { color: #e67e22; font-weight: bold; }
       .status-err  { color: #c0392b; font-weight: bold; }
       .well { border-radius: 4px; }
       pre { background: #f8f8f8; font-size: 12px; max-height: 300px; overflow-y: auto; }
+      .site-checkbox-scroll {
+        max-height: 320px; overflow-y: auto;
+        border: 1px solid #ddd; border-radius: 3px;
+        padding: 5px 8px; background: #fff;
+      }
     "))
   ),
 
@@ -93,12 +98,18 @@ ui <- navbarPage(
   tabPanel("Data Upload",
     fluidPage(br(), fluidRow(
       column(4, wellPanel(
-        h4("Upload Data"),
-        fileInput("dataFile", "Choose CSV File",
-                  accept = c("text/csv", ".csv"), placeholder = "No file selected"),
-        checkboxInput("hasHeader", "File has header row", value = TRUE),
-        selectInput("sep", "Column separator:",
-                    choices = c(Comma = ",", Semicolon = ";", Tab = "\t"), selected = ","),
+        h4("Data Source"),
+        radioButtons("dataSource", label = NULL,
+                     choices  = c("Use example data"  = "example",
+                                  "Upload my own file" = "upload"),
+                     selected = "example"),
+        conditionalPanel("input.dataSource === 'upload'",
+          fileInput("dataFile", "Choose CSV File",
+                    accept = c("text/csv", ".csv"), placeholder = "No file selected"),
+          checkboxInput("hasHeader", "File has header row", value = TRUE),
+          selectInput("sep", "Column separator:",
+                      choices = c(Comma = ",", Semicolon = ";", Tab = "\t"), selected = ",")
+        ),
         hr(),
         h4("Column Mapping"),
         selectInput("idCol",    "Site ID column:",       choices = NULL),
@@ -128,6 +139,8 @@ ui <- navbarPage(
           column(6, actionButton("clearAllBtn",  "Clear All",
                                  class = "btn-warning btn-sm btn-block"))
         ),
+        br(),
+        uiOutput("siteSearchUI"),
         br(),
         uiOutput("siteCheckboxes")
       )),
@@ -170,19 +183,23 @@ ui <- navbarPage(
     fluidPage(br(),
       fluidRow(column(12,
         h4("Predicted Collision Counts — Next Year"),
-        p(class = "text-muted", "Click any row to view the time-series plot for that site."),
+        p(class = "text-muted", "Click any row to add that site's time-series plot below."),
         DTOutput("resultsTable"),
         br(),
-        downloadButton("downloadResults", "Download as CSV", class = "btn-sm btn-default")
+        downloadButton("downloadResults", "Download table as CSV", class = "btn-sm btn-default")
       )),
       br(),
-      conditionalPanel("output.siteSelected == true",
-        fluidRow(column(12,
-          hr(),
-          h4(textOutput("plotTitle")),
-          plotOutput("timeSeriesPlot", height = "420px")
-        ))
-      )
+      fluidRow(column(12,
+        div(style = "display:flex; align-items:center; gap:10px;",
+          h4("Time-Series Plots", style = "margin:0;"),
+          actionButton("clearPlotsBtn", "Clear all",
+                       class = "btn-sm btn-danger", icon = icon("times")),
+          downloadButton("exportAllPlots", "Export all (PDF)",
+                         class = "btn-sm btn-default")
+        ),
+        br(),
+        uiOutput("allPlotsUI")
+      ))
     )
   ),
 
@@ -211,38 +228,108 @@ ui <- navbarPage(
   )
 )
 
+# ---- Plot helper (defined outside server so it can be called from download handlers) ----
+
+make_site_plot <- function(site_key, mcmc_results) {
+  r <- mcmc_results[[site_key]]
+  if (is.null(r) || !is.null(r$error)) return(NULL)
+
+  sdf      <- r$site_df
+  yrc      <- r$year_col
+  cnc      <- r$count_col
+  lam_s    <- r$lambda_samples
+  mu_vec   <- r$mu_vec
+  yr_vals  <- sdf[[yrc]]
+  obs_vals <- sdf[[cnc]]
+
+  lam_mean <- colMeans(lam_s)
+  lam_lo   <- apply(lam_s, 2, quantile, 0.025)
+  lam_hi   <- apply(lam_s, 2, quantile, 0.975)
+
+  hist_df <- data.frame(year = yr_vals, observed = obs_vals,
+                        lam_mean = lam_mean, lam_lo = lam_lo,
+                        lam_hi   = lam_hi,   spf = mu_vec)
+
+  future_yr <- max(yr_vals) + 1
+  pred_df   <- data.frame(year      = future_yr,
+                          pred_mean = mean(r$pred_samples),
+                          pred_lo   = quantile(r$pred_samples, 0.025),
+                          pred_hi   = quantile(r$pred_samples, 0.975))
+
+  ggplot(hist_df, aes(x = year)) +
+    geom_ribbon(aes(ymin = lam_lo, ymax = lam_hi), fill = "steelblue", alpha = 0.2) +
+    geom_line(aes(y = lam_mean, colour = "Fitted Poisson mean"), linewidth = 1) +
+    geom_line(aes(y = spf,      colour = "SPF (global model)"),
+              linetype = "dashed", linewidth = 0.9) +
+    geom_point(aes(y = observed), colour = "black", size = 3) +
+    geom_errorbar(data = pred_df,
+                  aes(x = year, ymin = pred_lo, ymax = pred_hi),
+                  colour = "tomato", width = 0.25, linewidth = 1) +
+    geom_point(data = pred_df, aes(x = year, y = pred_mean),
+               colour = "tomato", size = 4, shape = 18) +
+    scale_colour_manual(values = c("Fitted Poisson mean" = "steelblue",
+                                   "SPF (global model)"  = "darkorange")) +
+    labs(x = "Year", y = "Collision Count", colour = "",
+         title   = paste("Site:", site_key),
+         caption = paste0("Red diamond = predicted count for year ", future_yr,
+                          " (95% posterior interval). Shaded ribbon = 95% CI on Poisson mean.")) +
+    theme_minimal(base_size = 13) +
+    theme(legend.position = "bottom", panel.grid.minor = element_blank())
+}
+
 # ---- Server ---------------------------------------------------------------
 
 server <- function(input, output, session) {
 
   rv <- reactiveValues(
-    rawData      = NULL,
-    glmModel     = NULL,
-    mcmcResults  = NULL,
-    selectedSite = NULL,
-    mcmcLog      = ""
+    rawData     = NULL,
+    glmModel    = NULL,
+    mcmcResults = NULL,
+    mcmcLog     = ""
   )
 
   # Data Upload -----------------------------------------------------------
 
+  # Shared helper: populate column-mapping dropdowns from a data frame
+  set_col_defaults <- function(df) {
+    cols  <- colnames(df)
+    id_g  <- grep("^id$|site|location", cols, ignore.case = TRUE, value = TRUE)
+    yr_g  <- grep("^year$|time|period",  cols, ignore.case = TRUE, value = TRUE)
+    cnt_g <- grep("accident|collision|crash|count", cols, ignore.case = TRUE, value = TRUE)
+    updateSelectInput(session, "idCol",    choices = cols,
+                      selected = if (length(id_g))  id_g[1]  else cols[1])
+    updateSelectInput(session, "yearCol",  choices = cols,
+                      selected = if (length(yr_g))  yr_g[1]  else cols[min(2, length(cols))])
+    updateSelectInput(session, "countCol", choices = cols,
+                      selected = if (length(cnt_g)) cnt_g[1] else cols[min(3, length(cols))])
+  }
+
+  # Load example data when selected
+  observeEvent(input$dataSource, {
+    if (input$dataSource == "example") {
+      tryCatch({
+        df <- read.csv("ExampleData.csv", stringsAsFactors = FALSE)
+        rv$rawData <- df
+        set_col_defaults(df)
+      }, error = function(e) {
+        showNotification(paste("Could not load example data:", e$message),
+                         type = "error", duration = 8)
+      })
+    } else {
+      rv$rawData <- NULL
+    }
+  }, ignoreInit = FALSE)
+
+  # Load uploaded file
   observeEvent(input$dataFile, {
-    req(input$dataFile)
+    req(input$dataFile, input$dataSource == "upload")
     tryCatch({
       df <- read.csv(input$dataFile$datapath,
                      header           = input$hasHeader,
                      sep              = input$sep,
                      stringsAsFactors = FALSE)
       rv$rawData <- df
-      cols <- colnames(df)
-      id_g  <- grep("^id$|site|location", cols, ignore.case = TRUE, value = TRUE)
-      yr_g  <- grep("^year$|time|period",  cols, ignore.case = TRUE, value = TRUE)
-      cnt_g <- grep("accident|collision|crash|count", cols, ignore.case = TRUE, value = TRUE)
-      updateSelectInput(session, "idCol",    choices = cols,
-                        selected = if (length(id_g))  id_g[1]  else cols[1])
-      updateSelectInput(session, "yearCol",  choices = cols,
-                        selected = if (length(yr_g))  yr_g[1]  else cols[min(2, length(cols))])
-      updateSelectInput(session, "countCol", choices = cols,
-                        selected = if (length(cnt_g)) cnt_g[1] else cols[min(3, length(cols))])
+      set_col_defaults(df)
     }, error = function(e) {
       showNotification(paste("Error reading file:", e$message), type = "error", duration = 8)
     })
@@ -317,16 +404,48 @@ server <- function(input, output, session) {
     sort(unique(rv$rawData[[input$idCol]]))
   })
 
-  output$siteCheckboxes <- renderUI({
-    checkboxGroupInput("selectedSites", label = NULL,
-                       choices = availSites(), selected = availSites())
+  output$siteSearchUI <- renderUI({
+    selectizeInput("siteSearch", "Search / type site IDs:",
+                   choices  = availSites(),
+                   selected = availSites(),
+                   multiple = TRUE,
+                   options  = list(placeholder = "Type to filter sites...",
+                                   plugins     = list("remove_button")))
   })
+
+  output$siteCheckboxes <- renderUI({
+    div(class = "site-checkbox-scroll",
+      checkboxGroupInput("selectedSites", label = NULL,
+                         choices = availSites(), selected = availSites())
+    )
+  })
+
+  # Keep the two selection inputs in sync using a flag to prevent loops
+  syncingSites <- reactiveVal(FALSE)
+
+  observeEvent(input$siteSearch, {
+    if (isTRUE(syncingSites())) return()
+    syncingSites(TRUE)
+    updateCheckboxGroupInput(session, "selectedSites",
+                             selected = input$siteSearch %||% character(0))
+    syncingSites(FALSE)
+  }, ignoreNULL = FALSE, ignoreInit = TRUE)
+
+  observeEvent(input$selectedSites, {
+    if (isTRUE(syncingSites())) return()
+    syncingSites(TRUE)
+    updateSelectizeInput(session, "siteSearch",
+                         selected = input$selectedSites %||% character(0))
+    syncingSites(FALSE)
+  }, ignoreNULL = FALSE, ignoreInit = TRUE)
 
   observeEvent(input$selectAllBtn, {
     updateCheckboxGroupInput(session, "selectedSites", selected = availSites())
+    updateSelectizeInput(session, "siteSearch", selected = availSites())
   })
   observeEvent(input$clearAllBtn, {
     updateCheckboxGroupInput(session, "selectedSites", selected = character(0))
+    updateSelectizeInput(session, "siteSearch", selected = character(0))
   })
 
   output$collisionTrends <- renderPlot({
@@ -450,8 +569,7 @@ server <- function(input, output, session) {
         year_vec <- sdf[[yrc]] - max(sdf[[yrc]])
         mu_vec   <- pmax(sdf$mu_spf, 1e-6)
 
-        yr_coef  <- tryCatch(coef(glm_fit)[yrc], error = function(e) NA_real_)
-        predmu   <- max(if (!is.na(yr_coef)) mu_vec[n] * exp(yr_coef) else mu_vec[n], 1e-6)
+        predmu   <- max(mu_vec[n], 1e-6)
 
         jd <- list(y = y_vec, year = year_vec, mu = mu_vec,
                    predmu = predmu, n_past = n - 1)
@@ -543,70 +661,100 @@ server <- function(input, output, session) {
     content  = function(file) write.csv(resultsDF(), file, row.names = FALSE)
   )
 
-  # Time Series Plot ------------------------------------------------------
+  # Time Series Plots (accumulating) --------------------------------------
+
+  plotSites <- reactiveVal(character(0))
 
   observeEvent(input$resultsTable_rows_selected, {
     idx <- input$resultsTable_rows_selected
-    rv$selectedSite <- if (length(idx) > 0) resultsDF()$Site[idx] else NULL
+    if (length(idx) > 0) {
+      site <- resultsDF()$Site[idx]
+      if (!site %in% plotSites()) plotSites(c(plotSites(), site))
+    }
   })
 
-  output$siteSelected <- reactive({ !is.null(rv$selectedSite) })
-  outputOptions(output, "siteSelected", suspendWhenHidden = FALSE)
+  observeEvent(input$clearPlotsBtn, { plotSites(character(0)) })
 
-  output$plotTitle <- renderText({
-    req(rv$selectedSite)
-    paste("Time Series — Site:", rv$selectedSite)
+  output$allPlotsUI <- renderUI({
+    sites <- plotSites()
+    if (length(sites) == 0)
+      return(p(class = "text-muted", "Click a row in the table above to add a plot here."))
+
+    tagList(lapply(sites, function(site) {
+      sid     <- make.names(site)
+      plot_id <- paste0("tsplot_", sid)
+      dl_id   <- paste0("dl_tsplot_", sid)
+      rm_id   <- paste0("rm_plot_", sid)
+      div(style = "margin-bottom: 30px;",
+        hr(),
+        div(style = "display:flex; justify-content:space-between; align-items:center;",
+          h5(paste("Site:", site), style = "margin:0;"),
+          div(
+            downloadButton(dl_id, "Export PNG", class = "btn-xs btn-default"),
+            tags$span(" "),
+            actionButton(rm_id, "", icon = icon("times"),
+                         class = "btn-xs btn-danger", title = "Remove plot")
+          )
+        ),
+        plotOutput(plot_id, height = "360px")
+      )
+    }))
   })
 
-  output$timeSeriesPlot <- renderPlot({
-    req(rv$selectedSite, rv$mcmcResults)
-    key <- as.character(rv$selectedSite)
-    r   <- rv$mcmcResults[[key]]
-    validate(need(!is.null(r),          "No results for this site."))
-    validate(need(is.null(r$error),     paste("Error:", r$error)))
+  # Dynamically create render + download + remove handlers for each plot.
+  # Use session$userData to ensure each observer is registered only once.
+  observe({
+    req(rv$mcmcResults)
+    sites <- plotSites()
+    if (is.null(session$userData$plot_obs)) session$userData$plot_obs <- character(0)
 
-    sdf      <- r$site_df
-    yrc      <- r$year_col
-    cnc      <- r$count_col
-    lam_s    <- r$lambda_samples
-    mu_vec   <- r$mu_vec
-    yr_vals  <- sdf[[yrc]]
-    obs_vals <- sdf[[cnc]]
+    lapply(sites, function(site) {
+      local({
+        s       <- site
+        sid     <- make.names(s)
+        plot_id <- paste0("tsplot_", sid)
+        dl_id   <- paste0("dl_tsplot_", sid)
+        rm_id   <- paste0("rm_plot_", sid)
 
-    lam_mean <- colMeans(lam_s)
-    lam_lo   <- apply(lam_s, 2, quantile, 0.025)
-    lam_hi   <- apply(lam_s, 2, quantile, 0.975)
+        output[[plot_id]] <- renderPlot({
+          p <- make_site_plot(s, rv$mcmcResults)
+          validate(need(!is.null(p), paste("No results available for site", s)))
+          p
+        })
 
-    hist_df <- data.frame(year = yr_vals, observed = obs_vals,
-                          lam_mean = lam_mean, lam_lo = lam_lo,
-                          lam_hi   = lam_hi,   spf = mu_vec)
+        output[[dl_id]] <- downloadHandler(
+          filename = function() paste0("RAPTOR_site_", s, "_", Sys.Date(), ".png"),
+          content  = function(file) {
+            p <- make_site_plot(s, rv$mcmcResults)
+            ggsave(file, plot = p, width = 10, height = 5, dpi = 150, device = "png")
+          }
+        )
 
-    future_yr  <- max(yr_vals) + 1
-    pred_mean  <- mean(r$pred_samples)
-    pred_lo    <- quantile(r$pred_samples, 0.025)
-    pred_hi    <- quantile(r$pred_samples, 0.975)
-    pred_df    <- data.frame(year = future_yr, pred_mean = pred_mean,
-                             pred_lo = pred_lo, pred_hi = pred_hi)
-
-    ggplot(hist_df, aes(x = year)) +
-      geom_ribbon(aes(ymin = lam_lo, ymax = lam_hi), fill = "steelblue", alpha = 0.2) +
-      geom_line(aes(y = lam_mean,  colour = "Fitted Poisson mean"), linewidth = 1) +
-      geom_line(aes(y = spf,       colour = "SPF (global model)"),
-                linetype = "dashed", linewidth = 0.9) +
-      geom_point(aes(y = observed), colour = "black", size = 3) +
-      geom_errorbar(data = pred_df,
-                    aes(x = year, ymin = pred_lo, ymax = pred_hi),
-                    colour = "tomato", width = 0.25, linewidth = 1) +
-      geom_point(data = pred_df, aes(x = year, y = pred_mean),
-                 colour = "tomato", size = 4, shape = 18) +
-      scale_colour_manual(values = c("Fitted Poisson mean" = "steelblue",
-                                     "SPF (global model)"  = "darkorange")) +
-      labs(x = "Year", y = "Collision Count", colour = "",
-           caption = paste0("Red diamond = predicted count for year ", future_yr,
-                            " (95% posterior interval). Shaded ribbon = 95% CI on Poisson mean.")) +
-      theme_minimal(base_size = 13) +
-      theme(legend.position = "bottom", panel.grid.minor = element_blank())
+        # Register remove-button observer only once per site
+        if (!rm_id %in% session$userData$plot_obs) {
+          session$userData$plot_obs <- c(session$userData$plot_obs, rm_id)
+          observeEvent(input[[rm_id]], {
+            plotSites(setdiff(plotSites(), s))
+          }, ignoreInit = TRUE)
+        }
+      })
+    })
   })
+
+  output$exportAllPlots <- downloadHandler(
+    filename = function() paste0("RAPTOR_plots_", Sys.Date(), ".pdf"),
+    content  = function(file) {
+      req(rv$mcmcResults)
+      sites <- plotSites()
+      validate(need(length(sites) > 0, "No plots to export."))
+      pdf(file, width = 10, height = 5)
+      for (s in sites) {
+        p <- make_site_plot(s, rv$mcmcResults)
+        if (!is.null(p)) print(p)
+      }
+      dev.off()
+    }
+  )
 
   # Site Warnings ---------------------------------------------------------
 
