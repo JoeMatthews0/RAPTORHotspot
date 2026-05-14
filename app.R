@@ -87,11 +87,7 @@ ui <- navbarPage(
         tags$li("Year — numeric year or time index"),
         tags$li("Collision count — non-negative integer")
       ),
-      p("All other numeric columns are treated as SPF predictor variables."),
-      hr(),
-      tags$small(class = "text-muted",
-        "Requires JAGS (", tags$a("mcmc-jags.sourceforge.net",
-          href = "https://mcmc-jags.sourceforge.net"), ") to be installed.")
+      p("All other numeric columns are treated as SPF predictor variables.")
     )))
   ),
 
