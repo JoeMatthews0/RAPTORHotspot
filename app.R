@@ -4,6 +4,7 @@ library(dplyr)
 library(ggplot2)
 library(DT)
 library(rjags)
+library(patchwork)
 
 MODELSTRING <- "
   model {
@@ -228,9 +229,20 @@ ui <- navbarPage(
   )
 )
 
-# ---- Plot helper (defined outside server so it can be called from download handlers) ----
+# ---- Plot helpers (defined outside server so they can be called from download handlers) ----
 
-make_site_plot <- function(site_key, mcmc_results) {
+compute_ylim <- function(site_key, mcmc_results) {
+  r <- mcmc_results[[site_key]]
+  if (is.null(r) || !is.null(r$error)) return(NULL)
+  upper <- max(
+    max(r$site_df[[r$count_col]]),
+    max(apply(r$lambda_samples, 2, quantile, 0.975)),
+    quantile(r$pred_samples, 0.975)
+  )
+  c(0, upper * 1.05)
+}
+
+make_site_plot <- function(site_key, mcmc_results, ylim = NULL) {
   r <- mcmc_results[[site_key]]
   if (is.null(r) || !is.null(r$error)) return(NULL)
 
@@ -259,22 +271,62 @@ make_site_plot <- function(site_key, mcmc_results) {
   ggplot(hist_df, aes(x = year)) +
     geom_ribbon(aes(ymin = lam_lo, ymax = lam_hi), fill = "steelblue", alpha = 0.2) +
     geom_line(aes(y = lam_mean, colour = "Fitted Poisson mean"), linewidth = 1) +
-    geom_line(aes(y = spf,      colour = "SPF (global model)"),
-              linetype = "dashed", linewidth = 0.9) +
+    #geom_line(aes(y = spf, colour = "SPF (global model)"), linetype = "dashed", linewidth = 0.9) +
     geom_point(aes(y = observed), colour = "black", size = 3) +
     geom_errorbar(data = pred_df,
                   aes(x = year, ymin = pred_lo, ymax = pred_hi),
                   colour = "tomato", width = 0.25, linewidth = 1) +
     geom_point(data = pred_df, aes(x = year, y = pred_mean),
                colour = "tomato", size = 4, shape = 18) +
-    scale_colour_manual(values = c("Fitted Poisson mean" = "steelblue",
-                                   "SPF (global model)"  = "darkorange")) +
+    scale_colour_manual(values = c("Fitted Poisson mean" = "steelblue"
+    #                               ,"SPF (global model)"  = "darkorange"
+    )) +
     labs(x = "Year", y = "Collision Count", colour = "",
-         title   = paste("Site:", site_key),
          caption = paste0("Red diamond = predicted count for year ", future_yr,
-                          " (95% posterior interval). Shaded ribbon = 95% CI on Poisson mean.")) +
+                          " (95% PI). Ribbon = 95% CI on Poisson mean.")) +
     theme_minimal(base_size = 13) +
-    theme(legend.position = "bottom", panel.grid.minor = element_blank())
+    theme(panel.grid.minor = element_blank()) +
+    if (!is.null(ylim)) coord_cartesian(ylim = ylim) else NULL
+}
+
+make_pred_dist_plot <- function(site_key, mcmc_results, ylim = NULL) {
+  r <- mcmc_results[[site_key]]
+  if (is.null(r) || !is.null(r$error)) return(NULL)
+
+  ps        <- as.integer(round(r$pred_samples))
+  pred_mean <- mean(r$pred_samples)
+  pred_lo   <- quantile(r$pred_samples, 0.025)
+  pred_hi   <- quantile(r$pred_samples, 0.975)
+
+  tab    <- table(ps)
+  pmf_df <- data.frame(count = as.integer(names(tab)),
+                       prob  = as.numeric(tab) / length(ps))
+
+  ggplot(pmf_df, aes(x = count, y = prob)) +
+    geom_col(fill = "tomato", alpha = 0.75, width = 0.8) +
+    geom_vline(xintercept = pred_mean, colour = "tomato", linewidth = 0.8,
+               linetype = "dashed") +
+    geom_vline(xintercept = pred_lo,   colour = "tomato", linewidth = 0.5,
+               linetype = "dotted") +
+    geom_vline(xintercept = pred_hi,   colour = "tomato", linewidth = 0.5,
+               linetype = "dotted") +
+    coord_flip(xlim = ylim) +
+    labs(x = "Collision count", y = "Posterior probability",
+         caption = paste0("Mean = ", round(pred_mean, 1),
+                          "  \u2022  95% PI: [", round(pred_lo, 1),
+                          ", ", round(pred_hi, 1), "]")) +
+    theme_minimal(base_size = 13) +
+    theme(panel.grid.minor = element_blank())
+}
+
+# Combine both plots into one aligned patchwork object.
+# guides = "collect" pulls the TS legend out of the panel area so both panels
+# are sized identically; plot_annotation adds the shared site title.
+combine_site_plots <- function(p1, p2, site_key) {
+  p1 + p2 +
+    plot_layout(widths = c(7, 5), guides = "collect") +
+    plot_annotation(title = paste("Site:", site_key)) &
+    theme(legend.position = "bottom")
 }
 
 # ---- Server ---------------------------------------------------------------
@@ -681,14 +733,14 @@ server <- function(input, output, session) {
       return(p(class = "text-muted", "Click a row in the table above to add a plot here."))
 
     tagList(lapply(sites, function(site) {
-      sid     <- make.names(site)
-      plot_id <- paste0("tsplot_", sid)
-      dl_id   <- paste0("dl_tsplot_", sid)
-      rm_id   <- paste0("rm_plot_", sid)
+      sid          <- make.names(site)
+      combined_id  <- paste0("combined_", sid)
+      dl_id        <- paste0("dl_plot_",  sid)
+      rm_id        <- paste0("rm_plot_",  sid)
       div(style = "margin-bottom: 30px;",
         hr(),
-        div(style = "display:flex; justify-content:space-between; align-items:center;",
-          h5(paste("Site:", site), style = "margin:0;"),
+        div(style = "display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;",
+          tags$span(),
           div(
             downloadButton(dl_id, "Export PNG", class = "btn-xs btn-default"),
             tags$span(" "),
@@ -696,7 +748,7 @@ server <- function(input, output, session) {
                          class = "btn-xs btn-danger", title = "Remove plot")
           )
         ),
-        plotOutput(plot_id, height = "360px")
+        plotOutput(combined_id, height = "380px")
       )
     }))
   })
@@ -710,23 +762,28 @@ server <- function(input, output, session) {
 
     lapply(sites, function(site) {
       local({
-        s       <- site
-        sid     <- make.names(s)
-        plot_id <- paste0("tsplot_", sid)
-        dl_id   <- paste0("dl_tsplot_", sid)
-        rm_id   <- paste0("rm_plot_", sid)
+        s           <- site
+        sid         <- make.names(s)
+        combined_id <- paste0("combined_", sid)
+        dl_id       <- paste0("dl_plot_",  sid)
+        rm_id       <- paste0("rm_plot_",  sid)
 
-        output[[plot_id]] <- renderPlot({
-          p <- make_site_plot(s, rv$mcmcResults)
-          validate(need(!is.null(p), paste("No results available for site", s)))
-          p
+        output[[combined_id]] <- renderPlot({
+          ylim <- compute_ylim(s, rv$mcmcResults)
+          p1 <- make_site_plot(s, rv$mcmcResults, ylim = ylim)
+          p2 <- make_pred_dist_plot(s, rv$mcmcResults, ylim = ylim)
+          validate(need(!is.null(p1), paste("No results available for site", s)))
+          combine_site_plots(p1, p2, s)
         })
 
         output[[dl_id]] <- downloadHandler(
           filename = function() paste0("RAPTOR_site_", s, "_", Sys.Date(), ".png"),
           content  = function(file) {
-            p <- make_site_plot(s, rv$mcmcResults)
-            ggsave(file, plot = p, width = 10, height = 5, dpi = 150, device = "png")
+            ylim <- compute_ylim(s, rv$mcmcResults)
+            p1 <- make_site_plot(s, rv$mcmcResults, ylim = ylim)
+            p2 <- make_pred_dist_plot(s, rv$mcmcResults, ylim = ylim)
+            ggsave(file, plot = combine_site_plots(p1, p2, s),
+                   width = 15, height = 5, dpi = 150, device = "png")
           }
         )
 
@@ -747,10 +804,13 @@ server <- function(input, output, session) {
       req(rv$mcmcResults)
       sites <- plotSites()
       validate(need(length(sites) > 0, "No plots to export."))
-      pdf(file, width = 10, height = 5)
+      pdf(file, width = 15, height = 5)
       for (s in sites) {
-        p <- make_site_plot(s, rv$mcmcResults)
-        if (!is.null(p)) print(p)
+        ylim <- compute_ylim(s, rv$mcmcResults)
+        p1 <- make_site_plot(s, rv$mcmcResults, ylim = ylim)
+        p2 <- make_pred_dist_plot(s, rv$mcmcResults, ylim = ylim)
+        if (!is.null(p1) && !is.null(p2))
+          print(combine_site_plots(p1, p2, s))
       }
       dev.off()
     }
