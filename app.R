@@ -419,7 +419,7 @@ server <- function(input, output, session) {
 
   output$dataPreview <- renderDT({
     req(rv$rawData)
-    datatable(head(rv$rawData, 20),
+    datatable(rv$rawData,
               options = list(scrollX = TRUE, pageLength = 10, dom = "tip"),
               rownames = FALSE)
   })
