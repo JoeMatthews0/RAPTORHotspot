@@ -618,7 +618,7 @@ server <- function(input, output, session) {
       append_log(paste("Fitting SPF:", deparse(glm_form)))
 
       glm_fit <- tryCatch(
-        glm.nb(glm_form, data = df),
+        glm.nb(glm_form, data = df, control = glm.control(maxit = 500)),
         error = function(e) {
           showNotification(paste("SPF fitting failed:", e$message), type = "error", duration = 10)
           NULL
