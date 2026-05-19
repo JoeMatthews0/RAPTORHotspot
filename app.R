@@ -6,6 +6,11 @@ library(DT)
 library(rjags)
 library(patchwork)
 
+# Build LA choices from STATS19 Data folder at startup
+stats19_files   <- list.files("STATS19 Data", pattern = "_clusters\\.csv$")
+stats19_la_keys <- sub("_clusters\\.csv$", "", stats19_files)
+stats19_choices <- setNames(stats19_la_keys, gsub("_", " ", stats19_la_keys))
+
 MODELSTRING <- "
   model {
     for (i in 1:n_past) {
@@ -97,8 +102,9 @@ ui <- navbarPage(
       column(4, wellPanel(
         h4("Data Source"),
         radioButtons("dataSource", label = NULL,
-                     choices  = c("Use example data"  = "example",
-                                  "Upload my own file" = "upload"),
+                     choices  = c("Use example data"   = "example",
+                                  "Upload my own file" = "upload",
+                                  "Use STATS-19 Data"  = "stats19"),
                      selected = "example"),
         conditionalPanel("input.dataSource === 'upload'",
           fileInput("dataFile", "Choose CSV File",
@@ -106,6 +112,10 @@ ui <- navbarPage(
           checkboxInput("hasHeader", "File has header row", value = TRUE),
           selectInput("sep", "Column separator:",
                       choices = c(Comma = ",", Semicolon = ";", Tab = "\t"), selected = ",")
+        ),
+        conditionalPanel("input.dataSource === 'stats19'",
+          selectInput("stats19LA", "Select Local Authority:",
+                      choices = stats19_choices)
         ),
         hr(),
         h4("Column Mapping"),
@@ -352,6 +362,18 @@ server <- function(input, output, session) {
                       selected = if (length(cnt_g)) cnt_g[1] else cols[min(3, length(cols))])
   }
 
+  load_stats19 <- function(la_key) {
+    tryCatch({
+      path <- file.path("STATS19 Data", paste0(la_key, "_clusters.csv"))
+      df   <- read.csv(path, stringsAsFactors = FALSE)
+      rv$rawData <- df
+      set_col_defaults(df)
+    }, error = function(e) {
+      showNotification(paste("Could not load STATS-19 data:", e$message),
+                       type = "error", duration = 8)
+    })
+  }
+
   # Load example data when selected
   observeEvent(input$dataSource, {
     if (input$dataSource == "example") {
@@ -363,10 +385,19 @@ server <- function(input, output, session) {
         showNotification(paste("Could not load example data:", e$message),
                          type = "error", duration = 8)
       })
+    } else if (input$dataSource == "stats19") {
+      req(input$stats19LA)
+      load_stats19(input$stats19LA)
     } else {
       rv$rawData <- NULL
     }
   }, ignoreInit = FALSE)
+
+  # Reload when user picks a different LA
+  observeEvent(input$stats19LA, {
+    req(input$dataSource == "stats19")
+    load_stats19(input$stats19LA)
+  }, ignoreInit = TRUE)
 
   # Load uploaded file
   observeEvent(input$dataFile, {
