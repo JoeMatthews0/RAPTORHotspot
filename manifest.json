@@ -10,6 +10,43 @@
     "has_parameters": false
   },
   "packages": {
+    "DBI": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "DBI",
+        "Title": "R Database Interface",
+        "Version": "1.3.0",
+        "Date": "2026-02-11",
+        "Authors@R": "c(\n    person(\"R Special Interest Group on Databases (R-SIG-DB)\", role = \"aut\"),\n    person(\"Hadley\", \"Wickham\", role = \"aut\"),\n    person(\"Kirill\", \"Müller\", , \"kirill@cynkra.com\", role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-1416-3412\")),\n    person(\"R Consortium\", role = \"fnd\")\n  )",
+        "Description": "A database interface definition for communication between R\n    and relational database management systems.  All classes in this\n    package are virtual and need to be extended by the various R/DBMS\n    implementations.",
+        "License": "LGPL (>= 2.1)",
+        "URL": "https://dbi.r-dbi.org, https://github.com/r-dbi/DBI",
+        "BugReports": "https://github.com/r-dbi/DBI/issues",
+        "Depends": "methods, R (>= 3.0.0)",
+        "Suggests": "arrow, blob, callr, covr, DBItest (>= 1.8.2), dbplyr,\ndownlit, dplyr, glue, hms, knitr, magrittr, nanoarrow (>=\n0.3.0.1), otel, otelsdk, RMariaDB, rmarkdown, rprojroot,\nRSQLite (>= 1.1-2), testthat (>= 3.0.0), vctrs, xml2",
+        "VignetteBuilder": "knitr",
+        "Config/autostyle/scope": "line_breaks",
+        "Config/autostyle/strict": "false",
+        "Config/Needs/check": "r-dbi/DBItest",
+        "Config/Needs/website": "r-dbi/DBItest, r-dbi/dbitemplate, adbi,\nAzureKusto, bigrquery, DatabaseConnector, dittodb, duckdb,\nimplyr, lazysf, odbc, pool, RAthena, IMSMWU/RClickhouse, RH2,\nRJDBC, RMariaDB, RMySQL, RPostgres, RPostgreSQL, RPresto,\nRSQLite, sergeant, sparklyr, withr",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.3.3.9000",
+        "NeedsCompilation": "no",
+        "Packaged": "2026-02-24 17:22:33 UTC; kirill",
+        "Author": "R Special Interest Group on Databases (R-SIG-DB) [aut],\n  Hadley Wickham [aut],\n  Kirill Müller [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-1416-3412>),\n  R Consortium [fnd]",
+        "Maintainer": "Kirill Müller <kirill@cynkra.com>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-02-25 06:31:27 UTC",
+        "Built": "R 4.6.0; ; 2026-04-25 15:47:33 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "DBI",
+        "RemoteRef": "DBI",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "1.3.0"
+      }
+    },
     "DT": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -40,6 +77,31 @@
         "RemoteRef": "DT",
         "RemoteRepos": "https://cran.rstudio.com",
         "RemoteSha": "0.34.0"
+      }
+    },
+    "KernSmooth": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "KernSmooth",
+        "Priority": "recommended",
+        "Version": "2.23-26",
+        "Date": "2024-12-10",
+        "Title": "Functions for Kernel Smoothing Supporting Wand & Jones (1995)",
+        "Authors@R": "c(person(\"Matt\", \"Wand\", role = \"aut\",\n\t             email = \"Matt.Wand@uts.edu.au\"),\n\t     person(\"Cleve\", \"Moler\", role = \"ctb\",\n\t            comment = \"LINPACK routines in src/d*\"),\n             person(\"Brian\", \"Ripley\", role = c(\"trl\", \"cre\", \"ctb\"),\n                    email = \"Brian.Ripley@R-project.org\",\n\t\t    comment = \"R port and updates\"))",
+        "Note": "Maintainers are not available to give advice on using a package\nthey did not author.",
+        "Depends": "R (>= 2.5.0), stats",
+        "Suggests": "MASS, carData",
+        "Description": "Functions for kernel smoothing (and density estimation)\n  corresponding to the book: \n  Wand, M.P. and Jones, M.C. (1995) \"Kernel Smoothing\".",
+        "License": "Unlimited",
+        "ByteCompile": "yes",
+        "NeedsCompilation": "yes",
+        "Packaged": "2024-12-10 15:33:25 UTC; ripley",
+        "Author": "Matt Wand [aut],\n  Cleve Moler [ctb] (LINPACK routines in src/d*),\n  Brian Ripley [trl, cre, ctb] (R port and updates)",
+        "Maintainer": "Brian Ripley <Brian.Ripley@R-project.org>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-01-01 10:25:36 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 08:58:51 UTC; unix"
       }
     },
     "MASS": {
@@ -237,7 +299,7 @@
       "description": {
         "Package": "bslib",
         "Title": "Custom 'Bootstrap' 'Sass' Themes for 'shiny' and 'rmarkdown'",
-        "Version": "0.10.0",
+        "Version": "0.11.0",
         "Authors@R": "c(\n    person(\"Carson\", \"Sievert\", , \"carson@posit.co\", role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-4958-2844\")),\n    person(\"Joe\", \"Cheng\", , \"joe@posit.co\", role = \"aut\"),\n    person(\"Garrick\", \"Aden-Buie\", , \"garrick@posit.co\", role = \"aut\",\n           comment = c(ORCID = \"0000-0002-7111-0077\")),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")),\n    person(, \"Bootstrap contributors\", role = \"ctb\",\n           comment = \"Bootstrap library\"),\n    person(, \"Twitter, Inc\", role = \"cph\",\n           comment = \"Bootstrap library\"),\n    person(\"Javi\", \"Aguilar\", role = c(\"ctb\", \"cph\"),\n           comment = \"Bootstrap colorpicker library\"),\n    person(\"Thomas\", \"Park\", role = c(\"ctb\", \"cph\"),\n           comment = \"Bootswatch library\"),\n    person(, \"PayPal\", role = c(\"ctb\", \"cph\"),\n           comment = \"Bootstrap accessibility plugin\")\n  )",
         "Description": "Simplifies custom 'CSS' styling of both 'shiny' and\n    'rmarkdown' via 'Bootstrap' 'Sass'. Supports 'Bootstrap' 3, 4 and 5 as\n    well as their various 'Bootswatch' themes. An interactive widget is\n    also provided for previewing themes in real time.",
         "License": "MIT + file LICENSE",
@@ -245,28 +307,28 @@
         "BugReports": "https://github.com/rstudio/bslib/issues",
         "Depends": "R (>= 2.10)",
         "Imports": "base64enc, cachem, fastmap (>= 1.1.1), grDevices, htmltools\n(>= 0.5.8), jquerylib (>= 0.1.3), jsonlite, lifecycle, memoise\n(>= 2.0.1), mime, rlang, sass (>= 0.4.9)",
-        "Suggests": "brand.yml, bsicons, curl, fontawesome, future, ggplot2,\nknitr, lattice, magrittr, rappdirs, rmarkdown (>= 2.7), shiny\n(>= 1.11.1), testthat, thematic, tools, utils, withr, yaml",
+        "Suggests": "brand.yml, bsicons, curl, fontawesome, future, ggplot2,\nknitr, lattice, magrittr, rappdirs, rmarkdown (>= 2.7), shiny\n(>= 1.11.1.9000), testthat, thematic, tools, utils, withr, yaml",
         "Config/Needs/deploy": "BH, chiflights22, colourpicker, commonmark, cpp11,\ncpsievert/chiflights22, cpsievert/histoslider, dplyr, DT,\nggplot2, ggridges, gt, hexbin, histoslider, htmlwidgets,\nlattice, leaflet, lubridate, markdown, modelr, plotly,\nreactable, reshape2, rprojroot, rsconnect, rstudio/shiny,\nscales, styler, tibble",
         "Config/Needs/routine": "chromote, desc, renv",
         "Config/Needs/website": "brio, crosstalk, dplyr, DT, ggplot2, glue,\nhtmlwidgets, leaflet, lorem, palmerpenguins, plotly, purrr,\nrprojroot, rstudio/htmltools, scales, stringr, tidyr, webshot2",
+        "Config/roxygen2/version": "8.0.0",
         "Config/testthat/edition": "3",
         "Config/testthat/parallel": "true",
         "Config/testthat/start-first": "zzzz-bs-sass, fonts, zzz-precompile,\ntheme-*, rmd-*",
         "Encoding": "UTF-8",
-        "RoxygenNote": "7.3.3",
-        "Collate": "'accordion.R' 'breakpoints.R' 'bs-current-theme.R'\n'bs-dependencies.R' 'bs-global.R' 'bs-remove.R'\n'bs-theme-layers.R' 'bs-theme-preset-bootswatch.R'\n'bs-theme-preset-brand.R' 'bs-theme-preset-builtin.R'\n'bs-theme-preset.R' 'utils.R' 'bs-theme-preview.R'\n'bs-theme-update.R' 'bs-theme.R' 'bslib-package.R' 'buttons.R'\n'card.R' 'deprecated.R' 'files.R' 'fill.R' 'imports.R'\n'input-code-editor.R' 'input-dark-mode.R' 'input-submit.R'\n'input-switch.R' 'layout.R' 'nav-items.R' 'nav-update.R'\n'navbar_options.R' 'navs-legacy.R' 'navs.R' 'onLoad.R' 'page.R'\n'popover.R' 'precompiled.R' 'print.R' 'shiny-devmode.R'\n'sidebar.R' 'staticimports.R' 'toast.R' 'tooltip.R'\n'utils-deps.R' 'utils-shiny.R' 'utils-tags.R' 'value-box.R'\n'version-default.R' 'versions.R'",
+        "Collate": "'accordion.R' 'breakpoints.R' 'bs-current-theme.R'\n'bs-dependencies.R' 'bs-global.R' 'bs-remove.R'\n'bs-theme-layers.R' 'bs-theme-preset-bootswatch.R'\n'bs-theme-preset-brand.R' 'bs-theme-preset-builtin.R'\n'bs-theme-preset.R' 'utils.R' 'bs-theme-preview.R'\n'bs-theme-update.R' 'bs-theme.R' 'bslib-package.R' 'buttons.R'\n'card.R' 'deprecated.R' 'files.R' 'fill.R' 'imports.R'\n'input-code-editor.R' 'input-dark-mode.R' 'input-submit.R'\n'input-switch.R' 'layout.R' 'nav-items.R' 'nav-update.R'\n'navbar_options.R' 'navs-legacy.R' 'navs.R' 'onLoad.R' 'page.R'\n'popover.R' 'precompiled.R' 'print.R' 'shiny-devmode.R'\n'sidebar.R' 'staticimports.R' 'toast.R' 'toolbar.R' 'tooltip.R'\n'utils-deps.R' 'utils-shiny.R' 'utils-tags.R' 'value-box.R'\n'version-default.R' 'versions.R'",
         "NeedsCompilation": "no",
-        "Packaged": "2026-01-22 00:32:06 UTC; garrick",
+        "Packaged": "2026-05-15 15:16:19 UTC; cpsievert",
         "Author": "Carson Sievert [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-4958-2844>),\n  Joe Cheng [aut],\n  Garrick Aden-Buie [aut] (ORCID:\n    <https://orcid.org/0000-0002-7111-0077>),\n  Posit Software, PBC [cph, fnd],\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Javi Aguilar [ctb, cph] (Bootstrap colorpicker library),\n  Thomas Park [ctb, cph] (Bootswatch library),\n  PayPal [ctb, cph] (Bootstrap accessibility plugin)",
         "Maintainer": "Carson Sievert <carson@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2026-01-26 08:10:02 UTC",
-        "Built": "R 4.6.0; ; 2026-04-26 05:14:07 UTC; unix",
+        "Date/Publication": "2026-05-16 08:10:07 UTC",
+        "Built": "R 4.6.0; ; 2026-05-16 12:36:52 UTC; unix",
         "RemoteType": "standard",
         "RemotePkgRef": "bslib",
         "RemoteRef": "bslib",
         "RemoteRepos": "https://cran.rstudio.com",
-        "RemoteSha": "0.10.0"
+        "RemoteSha": "0.11.0"
       }
     },
     "cachem": {
@@ -300,6 +362,65 @@
         "RemoteRef": "cachem",
         "RemoteRepos": "https://cran.rstudio.com",
         "RemoteSha": "1.1.0"
+      }
+    },
+    "class": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "class",
+        "Priority": "recommended",
+        "Version": "7.3-23",
+        "Date": "2025-01-01",
+        "Depends": "R (>= 3.0.0), stats, utils",
+        "Imports": "MASS",
+        "Authors@R": "c(person(\"Brian\", \"Ripley\", role = c(\"aut\", \"cre\", \"cph\"),\n                    email = \"Brian.Ripley@R-project.org\"),\n             person(\"William\", \"Venables\", role = \"cph\"))",
+        "Description": "Various functions for classification, including k-nearest\n  neighbour, Learning Vector Quantization and Self-Organizing Maps.",
+        "Title": "Functions for Classification",
+        "ByteCompile": "yes",
+        "License": "GPL-2 | GPL-3",
+        "URL": "http://www.stats.ox.ac.uk/pub/MASS4/",
+        "NeedsCompilation": "yes",
+        "Packaged": "2025-01-01 07:07:13 UTC; ripley",
+        "Author": "Brian Ripley [aut, cre, cph],\n  William Venables [cph]",
+        "Maintainer": "Brian Ripley <Brian.Ripley@R-project.org>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-01-01 10:25:33 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 08:58:54 UTC; unix"
+      }
+    },
+    "classInt": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "classInt",
+        "Version": "0.4-11",
+        "Date": "2025-01-06",
+        "Title": "Choose Univariate Class Intervals",
+        "Authors@R": "c(\n  person(\"Roger\", \"Bivand\", role=c(\"aut\", \"cre\"), email=\"Roger.Bivand@nhh.no\", comment=c(ORCID=\"0000-0003-2392-6140\")),\n  person(\"Bill\", \"Denney\", role=\"ctb\", comment=c(ORCID=\"0000-0002-5759-428X\")),\n  person(\"Richard\", \"Dunlap\", role=\"ctb\"),\n  person(\"Diego\", \"Hernangómez\", role=\"ctb\", comment=c(ORCID=\"0000-0001-8457-4658\")),\n  person(\"Hisaji\", \"Ono\", role=\"ctb\"),\n  person(\"Josiah\", \"Parry\", role = \"ctb\", comment = c(ORCID = \"0000-0001-9910-865X\")),\n  person(\"Matthieu\", \"Stigler\", role=\"ctb\", comment =c(ORCID=\"0000-0002-6802-4290\")))",
+        "Depends": "R (>= 2.2)",
+        "Imports": "grDevices, stats, graphics, e1071, class, KernSmooth",
+        "Suggests": "spData (>= 0.2.6.2), units, knitr, rmarkdown, tinytest",
+        "NeedsCompilation": "yes",
+        "Description": "Selected commonly used methods for choosing univariate class intervals for mapping or other graphics purposes.",
+        "License": "GPL (>= 2)",
+        "URL": "https://r-spatial.github.io/classInt/,\nhttps://github.com/r-spatial/classInt/",
+        "BugReports": "https://github.com/r-spatial/classInt/issues/",
+        "RoxygenNote": "6.1.1",
+        "Encoding": "UTF-8",
+        "VignetteBuilder": "knitr",
+        "Packaged": "2025-01-08 10:00:10 UTC; rsb",
+        "Author": "Roger Bivand [aut, cre] (<https://orcid.org/0000-0003-2392-6140>),\n  Bill Denney [ctb] (<https://orcid.org/0000-0002-5759-428X>),\n  Richard Dunlap [ctb],\n  Diego Hernangómez [ctb] (<https://orcid.org/0000-0001-8457-4658>),\n  Hisaji Ono [ctb],\n  Josiah Parry [ctb] (<https://orcid.org/0000-0001-9910-865X>),\n  Matthieu Stigler [ctb] (<https://orcid.org/0000-0002-6802-4290>)",
+        "Maintainer": "Roger Bivand <Roger.Bivand@nhh.no>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-01-08 13:40:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-26 02:21:24 UTC; unix",
+        "Archs": "classInt.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "classInt",
+        "RemoteRef": "classInt",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "0.4-11"
       }
     },
     "cli": {
@@ -404,7 +525,7 @@
       "description": {
         "Package": "cpp11",
         "Title": "A C++11 Interface for R's C Interface",
-        "Version": "0.5.4",
+        "Version": "0.5.5",
         "Authors@R": "\n    c(\n      person(\"Davis\", \"Vaughan\", email = \"davis@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-4777-038X\")),\n      person(\"Jim\",\"Hester\", role = \"aut\", comment = c(ORCID = \"0000-0002-2739-7082\")),\n      person(\"Romain\", \"François\", role = \"aut\", comment = c(ORCID = \"0000-0002-2444-4226\")),\n      person(\"Benjamin\", \"Kietzman\", role = \"ctb\"),\n      person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n    )",
         "Description": "Provides a header only, C++11 interface to R's C\n    interface.  Compared to other approaches 'cpp11' strives to be safe\n    against long jumps from the C API as well as C++ exceptions, conform\n    to normal R function semantics and supports interaction with 'ALTREP'\n    vectors.",
         "License": "MIT + file LICENSE",
@@ -419,17 +540,17 @@
         "Encoding": "UTF-8",
         "RoxygenNote": "7.3.3",
         "NeedsCompilation": "no",
-        "Packaged": "2026-04-03 18:50:48 UTC; davis",
+        "Packaged": "2026-05-06 12:49:17 UTC; davis",
         "Author": "Davis Vaughan [aut, cre] (ORCID:\n    <https://orcid.org/0000-0003-4777-038X>),\n  Jim Hester [aut] (ORCID: <https://orcid.org/0000-0002-2739-7082>),\n  Romain François [aut] (ORCID: <https://orcid.org/0000-0002-2444-4226>),\n  Benjamin Kietzman [ctb],\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Davis Vaughan <davis@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2026-04-04 05:11:17 UTC",
-        "Built": "R 4.6.0; ; 2026-04-25 15:40:41 UTC; unix",
+        "Date/Publication": "2026-05-06 14:40:12 UTC",
+        "Built": "R 4.6.0; ; 2026-05-06 16:42:29 UTC; unix",
         "RemoteType": "standard",
         "RemotePkgRef": "cpp11",
         "RemoteRef": "cpp11",
         "RemoteRepos": "https://cran.rstudio.com",
-        "RemoteSha": "0.5.4"
+        "RemoteSha": "0.5.5"
       }
     },
     "crosstalk": {
@@ -533,6 +654,34 @@
         "RemoteRef": "dplyr",
         "RemoteRepos": "https://cran.rstudio.com",
         "RemoteSha": "1.2.1"
+      }
+    },
+    "e1071": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "e1071",
+        "Version": "1.7-17",
+        "Title": "Misc Functions of the Department of Statistics, Probability\nTheory Group (Formerly: E1071), TU Wien",
+        "Imports": "graphics, grDevices, class, stats, methods, utils, proxy",
+        "Suggests": "cluster, mlbench, nnet, randomForest, rpart, SparseM, xtable,\nMatrix, MASS, slam",
+        "Authors@R": "c(person(given = \"David\", family = \"Meyer\", role = c(\"aut\", \"cre\"),\n                    email = \"David.Meyer@R-project.org\",\n\t\t    comment = c(ORCID = \"0000-0002-5196-3048\")),    \n             person(given = \"Evgenia\", family = \"Dimitriadou\", role = c(\"aut\",\"cph\")),\n             person(given = \"Kurt\", family = \"Hornik\", role = \"aut\",\n\t            email = \"Kurt.Hornik@R-project.org\",\n                    comment = c(ORCID = \"0000-0003-4198-9911\")),\n             person(given = \"Andreas\", family = \"Weingessel\", role = \"aut\"),\n             person(given = \"Friedrich\", family = \"Leisch\", role = \"aut\"),\n             person(given = \"Chih-Chung\", family = \"Chang\", role = c(\"ctb\",\"cph\"), comment = \"libsvm C++-code\"),\n             person(given = \"Chih-Chen\", family = \"Lin\", role = c(\"ctb\",\"cph\"), comment = \"libsvm C++-code\"))",
+        "Description": "Functions for latent class analysis, short time Fourier\n\t     transform, fuzzy clustering, support vector machines,\n\t     shortest path computation, bagged clustering, naive Bayes\n\t     classifier, generalized k-nearest neighbour ...",
+        "License": "GPL-2 | GPL-3",
+        "LazyLoad": "yes",
+        "NeedsCompilation": "yes",
+        "Packaged": "2025-12-17 20:18:24 UTC; meyer",
+        "Author": "David Meyer [aut, cre] (ORCID: <https://orcid.org/0000-0002-5196-3048>),\n  Evgenia Dimitriadou [aut, cph],\n  Kurt Hornik [aut] (ORCID: <https://orcid.org/0000-0003-4198-9911>),\n  Andreas Weingessel [aut],\n  Friedrich Leisch [aut],\n  Chih-Chung Chang [ctb, cph] (libsvm C++-code),\n  Chih-Chen Lin [ctb, cph] (libsvm C++-code)",
+        "Maintainer": "David Meyer <David.Meyer@R-project.org>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-12-18 13:06:03 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 23:17:21 UTC; unix",
+        "Archs": "e1071.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "e1071",
+        "RemoteRef": "e1071",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "1.7-17"
       }
     },
     "evaluate": {
@@ -1247,6 +1396,77 @@
         "RemoteSha": "0.2.3"
       }
     },
+    "leaflet": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Type": "Package",
+        "Package": "leaflet",
+        "Title": "Create Interactive Web Maps with the JavaScript 'Leaflet'\nLibrary",
+        "Version": "2.2.3",
+        "Authors@R": "c(\n    person(\"Joe\", \"Cheng\", , \"joe@posit.co\", role = \"aut\"),\n    person(\"Barret\", \"Schloerke\", , \"barret@posit.co\", role = \"aut\",\n           comment = c(ORCID = \"0000-0001-9986-114X\")),\n    person(\"Bhaskar\", \"Karambelkar\", role = \"aut\"),\n    person(\"Yihui\", \"Xie\", role = \"aut\"),\n    person(\"Garrick\", \"Aden-Buie\", , \"garrick@posit.co\", role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-7111-0077\")),\n    person(\"Hadley\", \"Wickham\", role = \"ctb\"),\n    person(\"Kenton\", \"Russell\", role = \"ctb\"),\n    person(\"Kent\", \"Johnson\", role = \"ctb\"),\n    person(\"Vladimir\", \"Agafonkin\", role = c(\"ctb\", \"cph\"),\n           comment = \"Leaflet library\"),\n    person(\"CloudMade\", role = \"cph\",\n           comment = \"Leaflet library\"),\n    person(\"Leaflet contributors\", role = \"ctb\",\n           comment = \"Leaflet library\"),\n    person(\"Brandon Copeland\", role = c(\"ctb\", \"cph\"),\n           comment = \"leaflet-measure plugin\"),\n    person(\"Joerg Dietrich\", role = c(\"ctb\", \"cph\"),\n           comment = \"Leaflet.Terminator plugin\"),\n    person(\"Benjamin Becquet\", role = c(\"ctb\", \"cph\"),\n           comment = \"Leaflet.MagnifyingGlass plugin\"),\n    person(\"Norkart AS\", role = c(\"ctb\", \"cph\"),\n           comment = \"Leaflet.MiniMap plugin\"),\n    person(\"L. Voogdt\", role = c(\"ctb\", \"cph\"),\n           comment = \"Leaflet.awesome-markers plugin\"),\n    person(\"Daniel Montague\", role = c(\"ctb\", \"cph\"),\n           comment = \"Leaflet.EasyButton plugin\"),\n    person(\"Kartena AB\", role = c(\"ctb\", \"cph\"),\n           comment = \"Proj4Leaflet plugin\"),\n    person(\"Robert Kajic\", role = c(\"ctb\", \"cph\"),\n           comment = \"leaflet-locationfilter plugin\"),\n    person(\"Mapbox\", role = c(\"ctb\", \"cph\"),\n           comment = \"leaflet-omnivore plugin\"),\n    person(\"Michael Bostock\", role = c(\"ctb\", \"cph\"),\n           comment = \"topojson\"),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n  )",
+        "Description": "Create and customize interactive maps using the 'Leaflet'\n    JavaScript library and the 'htmlwidgets' package. These maps can be\n    used directly from the R console, from 'RStudio', in Shiny\n    applications and R Markdown documents.",
+        "License": "MIT + file LICENSE",
+        "URL": "https://rstudio.github.io/leaflet/,\nhttps://github.com/rstudio/leaflet",
+        "BugReports": "https://github.com/rstudio/leaflet/issues",
+        "Depends": "R (>= 3.5)",
+        "Imports": "crosstalk, htmltools, htmlwidgets (>= 1.5.4), jquerylib,\nleaflet.providers (>= 2.0.0), magrittr, methods, png, raster\n(>= 3.6.3), RColorBrewer, rlang, scales (>= 1.0.0), sf (>=\n0.9-6), stats, viridisLite, xfun",
+        "Suggests": "knitr, maps, purrr, R6, RJSONIO, rmarkdown, s2, shiny (>=\n1.0.0), sp, terra, testthat (>= 3.0.0)",
+        "Config/Needs/website": "dplyr, ncdf4, rnaturalearth,\ntidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "LazyData": "true",
+        "RoxygenNote": "7.3.2",
+        "NeedsCompilation": "no",
+        "Packaged": "2025-09-02 15:28:47 UTC; garrick",
+        "Author": "Joe Cheng [aut],\n  Barret Schloerke [aut] (ORCID: <https://orcid.org/0000-0001-9986-114X>),\n  Bhaskar Karambelkar [aut],\n  Yihui Xie [aut],\n  Garrick Aden-Buie [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-7111-0077>),\n  Hadley Wickham [ctb],\n  Kenton Russell [ctb],\n  Kent Johnson [ctb],\n  Vladimir Agafonkin [ctb, cph] (Leaflet library),\n  CloudMade [cph] (Leaflet library),\n  Leaflet contributors [ctb] (Leaflet library),\n  Brandon Copeland [ctb, cph] (leaflet-measure plugin),\n  Joerg Dietrich [ctb, cph] (Leaflet.Terminator plugin),\n  Benjamin Becquet [ctb, cph] (Leaflet.MagnifyingGlass plugin),\n  Norkart AS [ctb, cph] (Leaflet.MiniMap plugin),\n  L. Voogdt [ctb, cph] (Leaflet.awesome-markers plugin),\n  Daniel Montague [ctb, cph] (Leaflet.EasyButton plugin),\n  Kartena AB [ctb, cph] (Proj4Leaflet plugin),\n  Robert Kajic [ctb, cph] (leaflet-locationfilter plugin),\n  Mapbox [ctb, cph] (leaflet-omnivore plugin),\n  Michael Bostock [ctb, cph] (topojson),\n  Posit Software, PBC [cph, fnd]",
+        "Maintainer": "Garrick Aden-Buie <garrick@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-09-04 07:40:02 UTC",
+        "Built": "R 4.6.0; ; 2026-04-26 16:02:09 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "leaflet",
+        "RemoteRef": "leaflet",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "2.2.3"
+      }
+    },
+    "leaflet.providers": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Type": "Package",
+        "Package": "leaflet.providers",
+        "Title": "Leaflet Providers",
+        "Version": "3.0.0",
+        "Authors@R": "c(\n    person(\"Leslie\", \"Huang\", , \"lesliehuang@nyu.edu\", role = \"aut\"),\n    person(\"Barret\", \"Schloerke\", , \"barret@posit.co\", role = c(\"ctb\", \"cre\"),\n           comment = c(ORCID = \"0000-0001-9986-114X\")),\n    person(\"Leaflet Providers contributors\", role = c(\"ctb\", \"cph\"),\n           comment = \"Leaflet Providers plugin\"),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"),\n           comment = c(ROR = \"https://ror.org/03wc8by49\"))\n  )",
+        "Description": "Contains third-party map tile provider information from\n    'Leaflet.js', <https://github.com/leaflet-extras/leaflet-providers>,\n    to be used with the 'leaflet' R package. Additionally,\n    'leaflet.providers' enables users to retrieve up-to-date provider\n    information between package updates.",
+        "License": "BSD_2_clause + file LICENSE",
+        "URL": "https://rstudio.github.io/leaflet.providers/,\nhttps://github.com/rstudio/leaflet.providers",
+        "BugReports": "https://github.com/rstudio/leaflet.providers/issues",
+        "Depends": "R (>= 2.10)",
+        "Imports": "htmltools",
+        "Suggests": "jsonlite, testthat (>= 3.0.0), V8",
+        "Config/Needs/website": "tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "Language": "en-US",
+        "RoxygenNote": "7.3.3",
+        "Collate": "'providers_data.R' 'get_current_providers.R'\n'leaflet.providers-package.R' 'zzz.R'",
+        "NeedsCompilation": "no",
+        "Packaged": "2026-03-18 17:18:39 UTC; barret",
+        "Author": "Leslie Huang [aut],\n  Barret Schloerke [ctb, cre] (ORCID:\n    <https://orcid.org/0000-0001-9986-114X>),\n  Leaflet Providers contributors [ctb, cph] (Leaflet Providers plugin),\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
+        "Maintainer": "Barret Schloerke <barret@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-03-18 21:50:08 UTC",
+        "Built": "R 4.6.0; ; 2026-04-25 23:33:09 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "leaflet.providers",
+        "RemoteRef": "leaflet.providers",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "3.0.0"
+      }
+    },
     "lifecycle": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -1512,6 +1732,35 @@
         "RemoteSha": "2.0.3"
       }
     },
+    "png": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "png",
+        "Version": "0.1-9",
+        "Title": "Read and write PNG images",
+        "Author": "Simon Urbanek [aut, cre, cph] (https://urbanek.nz, ORCID:\n    <https://orcid.org/0000-0003-2297-1732>)",
+        "Authors@R": "person(\"Simon\", \"Urbanek\", role=c(\"aut\",\"cre\",\"cph\"), email=\"Simon.Urbanek@r-project.org\", comment=c(\"https://urbanek.nz\", ORCID=\"0000-0003-2297-1732\"))",
+        "Maintainer": "Simon Urbanek <Simon.Urbanek@r-project.org>",
+        "Depends": "R (>= 2.9.0)",
+        "Description": "This package provides an easy and simple way to read, write and display bitmap images stored in the PNG format. It can read and write both files and in-memory raw vectors.",
+        "License": "GPL-2 | GPL-3",
+        "SystemRequirements": "libpng",
+        "URL": "https://www.rforge.net/png/",
+        "BugReports": "https://github.com/s-u/png/issues/",
+        "NeedsCompilation": "yes",
+        "Packaged": "2026-03-15 03:28:25 UTC; rforge",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-03-15 16:50:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 15:50:44 UTC; unix",
+        "Archs": "png.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "png",
+        "RemoteRef": "png",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "0.1-9"
+      }
+    },
     "promises": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -1549,6 +1798,36 @@
         "RemoteSha": "1.5.0"
       }
     },
+    "proxy": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "proxy",
+        "Type": "Package",
+        "Title": "Distance and Similarity Measures",
+        "Version": "0.4-29",
+        "Authors@R": "c(person(given = \"David\", family = \"Meyer\", role = c(\"aut\", \"cre\"),\n                    email = \"David.Meyer@R-project.org\",\n\t\t    comment = c(ORCID = \"0000-0002-5196-3048\")),\t    \n             person(given = \"Christian\", family = \"Buchta\", role = \"aut\"))",
+        "Description": "Provides an extensible framework for the efficient calculation of auto- and cross-proximities, along with implementations of the most popular ones. ",
+        "Depends": "R (>= 3.4.0)",
+        "Imports": "stats, utils",
+        "Suggests": "cba",
+        "Collate": "registry.R database.R dist.R similarities.R dissimilarities.R\nutil.R seal.R",
+        "License": "GPL-2 | GPL-3",
+        "NeedsCompilation": "yes",
+        "Packaged": "2025-12-29 16:26:15 UTC; hornik",
+        "Author": "David Meyer [aut, cre] (ORCID: <https://orcid.org/0000-0002-5196-3048>),\n  Christian Buchta [aut]",
+        "Maintainer": "David Meyer <David.Meyer@R-project.org>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-12-29 16:42:24 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 15:46:59 UTC; unix",
+        "Archs": "proxy.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "proxy",
+        "RemoteRef": "proxy",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "0.4-29"
+      }
+    },
     "rappdirs": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -1583,6 +1862,39 @@
         "RemoteRef": "rappdirs",
         "RemoteRepos": "https://cran.rstudio.com",
         "RemoteSha": "0.3.4"
+      }
+    },
+    "raster": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "raster",
+        "Type": "Package",
+        "Title": "Geographic Data Analysis and Modeling",
+        "Version": "3.6-32",
+        "Date": "2025-03-27",
+        "Imports": "Rcpp, methods, terra (>= 1.8-5)",
+        "LinkingTo": "Rcpp",
+        "Depends": "sp (>= 1.4-5), R (>= 3.5.0)",
+        "Suggests": "ncdf4, igraph, tcltk, parallel, rasterVis, MASS, sf,\ntinytest, gstat, fields, exactextractr",
+        "Description": "Reading, writing, manipulating, analyzing and modeling of spatial data. This package has been superseded by the \"terra\" package <https://CRAN.R-project.org/package=terra>. ",
+        "License": "GPL (>= 3)",
+        "URL": "https://rspatial.org/raster",
+        "BugReports": "https://github.com/rspatial/raster/issues/",
+        "Authors@R": "c(\n\tperson(\"Robert J.\", \"Hijmans\", role = c(\"cre\", \"aut\"),  \n\t\t\temail = \"r.hijmans@gmail.com\", \n\t\t\tcomment = c(ORCID = \"0000-0001-5872-2872\")),\n\tperson(\"Jacob\", \"van Etten\", role = \"ctb\"),\n\tperson(\"Michael\", \"Sumner\", role = \"ctb\"),\n\tperson(\"Joe\", \"Cheng\", role = \"ctb\"),\n\tperson(\"Dan\", \"Baston\", role = \"ctb\"),\n\tperson(\"Andrew\", \"Bevan\", role = \"ctb\"),\n\tperson(\"Roger\", \"Bivand\", role = \"ctb\"),\n\tperson(\"Lorenzo\", \"Busetto\", role = \"ctb\"),\n\tperson(\"Mort\", \"Canty\", role = \"ctb\"),\n\tperson(\"Ben\", \"Fasoli\", role = \"ctb\"),\n\tperson(\"David\", \"Forrest\", role = \"ctb\"),\n\tperson(\"Aniruddha\", \"Ghosh\", role = \"ctb\"),\n\tperson(\"Duncan\", \"Golicher\", role = \"ctb\"),\n\tperson(\"Josh\", \"Gray\", role = \"ctb\"),\n\tperson(\"Jonathan A.\", \"Greenberg\", role = \"ctb\"),\n\tperson(\"Paul\", \"Hiemstra\", role = \"ctb\"),\n\tperson(\"Kassel\", \"Hingee\", role = \"ctb\"),\n\tperson(\"Alex\", \"Ilich\", role = \"ctb\"),\n\tperson(\"Institute for Mathematics Applied Geosciences\", role=\"cph\"),\n\tperson(\"Charles\", \"Karney\", role = \"ctb\"),\n\tperson(\"Matteo\", \"Mattiuzzi\", role = \"ctb\"),\n\tperson(\"Steven\", \"Mosher\", role = \"ctb\"),\n\tperson(\"Babak\", \"Naimi\", role = \"ctb\"),\t\n\tperson(\"Jakub\", \"Nowosad\", role = \"ctb\"),\n\tperson(\"Edzer\", \"Pebesma\", role = \"ctb\"),\n\tperson(\"Oscar\", \"Perpinan Lamigueiro\", role = \"ctb\"),\n\tperson(\"Etienne B.\", \"Racine\", role = \"ctb\"),\n\tperson(\"Barry\", \"Rowlingson\", role = \"ctb\"),\n\tperson(\"Ashton\", \"Shortridge\", role = \"ctb\"),\n\tperson(\"Bill\", \"Venables\", role = \"ctb\"),\n\tperson(\"Rafael\", \"Wueest\", role = \"ctb\")\n\t)",
+        "NeedsCompilation": "yes",
+        "Packaged": "2025-03-28 04:28:45 UTC; rhijm",
+        "Author": "Robert J. Hijmans [cre, aut] (<https://orcid.org/0000-0001-5872-2872>),\n  Jacob van Etten [ctb],\n  Michael Sumner [ctb],\n  Joe Cheng [ctb],\n  Dan Baston [ctb],\n  Andrew Bevan [ctb],\n  Roger Bivand [ctb],\n  Lorenzo Busetto [ctb],\n  Mort Canty [ctb],\n  Ben Fasoli [ctb],\n  David Forrest [ctb],\n  Aniruddha Ghosh [ctb],\n  Duncan Golicher [ctb],\n  Josh Gray [ctb],\n  Jonathan A. Greenberg [ctb],\n  Paul Hiemstra [ctb],\n  Kassel Hingee [ctb],\n  Alex Ilich [ctb],\n  Institute for Mathematics Applied Geosciences [cph],\n  Charles Karney [ctb],\n  Matteo Mattiuzzi [ctb],\n  Steven Mosher [ctb],\n  Babak Naimi [ctb],\n  Jakub Nowosad [ctb],\n  Edzer Pebesma [ctb],\n  Oscar Perpinan Lamigueiro [ctb],\n  Etienne B. Racine [ctb],\n  Barry Rowlingson [ctb],\n  Ashton Shortridge [ctb],\n  Bill Venables [ctb],\n  Rafael Wueest [ctb]",
+        "Maintainer": "Robert J. Hijmans <r.hijmans@gmail.com>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-03-28 08:10:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 15:55:08 UTC; unix",
+        "Archs": "raster.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "raster",
+        "RemoteRef": "raster",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "3.6-32"
       }
     },
     "rjags": {
@@ -1691,6 +2003,42 @@
         "RemoteSha": "2.31"
       }
     },
+    "s2": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "s2",
+        "Title": "Spherical Geometry Operators Using the S2 Geometry Library",
+        "Version": "1.1.9",
+        "Authors@R": "c(\n     person(given = \"Dewey\",\n           family = \"Dunnington\",\n           role = c(\"aut\"),\n           email = \"dewey@fishandwhistle.net\",\n           comment = c(ORCID = \"0000-0002-9415-4582\")),\n     person(given = \"Edzer\",\n             family = \"Pebesma\",\n             role = c(\"aut\", \"cre\"),\n             email = \"edzer.pebesma@uni-muenster.de\",\n             comment = c(ORCID = \"0000-0001-8049-7069\")),\n    person(\"Ege\", \"Rubak\", email=\"rubak@math.aau.dk\", role = c(\"aut\")),\n    person(\"Jeroen\", \"Ooms\", , \"jeroen.ooms@stat.ucla.edu\", role = \"ctb\", comment = \"configure script\"),\n    person(family = \"Google, Inc.\", role = \"cph\", comment = \"Original s2geometry.io source code\")\n  )",
+        "Description": "Provides R bindings for Google's s2 library for geometric calculations on\n    the sphere. High-performance constructors and exporters provide high compatibility\n    with existing spatial packages, transformers construct new geometries from existing\n    geometries, predicates provide a means to select geometries based on spatial\n    relationships, and accessors extract information about geometries.",
+        "License": "Apache License (== 2.0)",
+        "Encoding": "UTF-8",
+        "LazyData": "true",
+        "RoxygenNote": "7.3.2",
+        "SystemRequirements": "cmake, OpenSSL >= 1.0.1, Abseil >= 20230802.0",
+        "LinkingTo": "Rcpp, wk",
+        "Imports": "Rcpp, wk (>= 0.6.0)",
+        "Suggests": "bit64, testthat (>= 3.0.0), vctrs",
+        "URL": "https://r-spatial.github.io/s2/, https://github.com/r-spatial/s2,\nhttp://s2geometry.io/",
+        "BugReports": "https://github.com/r-spatial/s2/issues",
+        "Depends": "R (>= 3.0.0)",
+        "Config/testthat/edition": "3",
+        "NeedsCompilation": "yes",
+        "Packaged": "2025-05-23 14:44:45 UTC; edzer",
+        "Author": "Dewey Dunnington [aut] (ORCID: <https://orcid.org/0000-0002-9415-4582>),\n  Edzer Pebesma [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-8049-7069>),\n  Ege Rubak [aut],\n  Jeroen Ooms [ctb] (configure script),\n  Google, Inc. [cph] (Original s2geometry.io source code)",
+        "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-05-23 15:50:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 15:47:47 UTC; unix",
+        "Archs": "s2.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "s2",
+        "RemoteRef": "s2",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "1.1.9"
+      }
+    },
     "sass": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -1761,6 +2109,44 @@
         "RemoteSha": "1.4.0"
       }
     },
+    "sf": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "sf",
+        "Version": "1.1-1",
+        "Title": "Simple Features for R",
+        "Authors@R": "\n    c(person(given = \"Edzer\",\n             family = \"Pebesma\",\n             role = c(\"aut\", \"cre\"),\n             email = \"edzer.pebesma@uni-muenster.de\",\n             comment = c(ORCID = \"0000-0001-8049-7069\")),\n      person(given = \"Roger\",\n             family = \"Bivand\",\n             role = \"ctb\",\n             comment = c(ORCID = \"0000-0003-2392-6140\")),\n      person(given = \"Etienne\",\n             family = \"Racine\",\n             role = \"ctb\"),\n      person(given = \"Michael\",\n             family = \"Sumner\",\n             role = \"ctb\"),\n      person(given = \"Ian\",\n             family = \"Cook\",\n             role = \"ctb\"),\n      person(given = \"Tim\",\n             family = \"Keitt\",\n             role = \"ctb\"),\n      person(given = \"Robin\",\n             family = \"Lovelace\",\n             role = \"ctb\"),\n      person(given = \"Hadley\",\n             family = \"Wickham\",\n             role = \"ctb\"),\n      person(given = \"Jeroen\",\n             family = \"Ooms\",\n             role = \"ctb\",\n             comment = c(ORCID = \"0000-0002-4035-0289\")),\n      person(given = \"Kirill\",\n             family = \"M\\u00fcller\",\n             role = \"ctb\"),\n      person(given = \"Thomas Lin\",\n             family = \"Pedersen\",\n             role = \"ctb\"),\n      person(given = \"Dan\",\n             family = \"Baston\",\n             role = \"ctb\"),\n      person(given = \"Dewey\",\n             family = \"Dunnington\",\n             role = \"ctb\",\n             comment = c(ORCID = \"0000-0002-9415-4582\")),\n      person(given = \"Alexandre\",\n             family = \"Courtiol\",\n             role = \"ctb\",\n             comment = c(ORCID = \"0000-0003-0637-2959\"))\n\t\t\t )",
+        "Description": "Support for simple feature access, a standardized way to\n    encode and analyze spatial vector data. Binds to 'GDAL' \n\t<doi:10.5281/zenodo.5884351> for reading and writing data, to 'GEOS'\n    <doi:10.5281/zenodo.11396894> for geometrical operations,\n    and to 'PROJ' <doi:10.5281/zenodo.5884394> for projection\n    conversions and datum transformations. Uses by default the 's2'\n    package for geometry operations on geodetic (long/lat degree)\n\tcoordinates.",
+        "License": "GPL-2 | MIT + file LICENSE",
+        "URL": "https://r-spatial.github.io/sf/, https://github.com/r-spatial/sf",
+        "BugReports": "https://github.com/r-spatial/sf/issues",
+        "Depends": "methods, R (>= 4.1.0)",
+        "Imports": "classInt (>= 0.4-1), DBI (>= 0.8), graphics, grDevices, grid,\ns2 (>= 1.1.0), stats, tools, units (>= 0.7-0), utils",
+        "Suggests": "blob, nanoarrow, covr, dplyr (>= 1.0.0), ggplot2, knitr,\nlwgeom (>= 0.2-14), maps, mapview, Matrix, microbenchmark,\nodbc, pbapply, pillar, pool, raster, rlang, rmarkdown,\nRPostgres (>= 1.1.0), RPostgreSQL, RSQLite, sp (>= 1.2-4),\nspatstat (>= 2.0-1), spatstat.geom, spatstat.random,\nspatstat.linnet, spatstat.utils, stars (>= 0.6-0), terra,\ntestthat (>= 3.0.0), tibble (>= 1.4.1), tidyr (>= 1.2.0),\ntidyselect (>= 1.0.0), tmap (>= 2.0), vctrs, wk (>= 0.9.0)",
+        "LinkingTo": "Rcpp",
+        "VignetteBuilder": "knitr",
+        "Encoding": "UTF-8",
+        "Config/testthat/edition": "2",
+        "Config/needs/coverage": "XML",
+        "SystemRequirements": "GDAL (>= 2.0.1), GEOS (>= 3.4.0), PROJ (>= 4.8.0),\nsqlite3",
+        "Collate": "'RcppExports.R' 'init.R' 'import-standalone-s3-register.R'\n'crs.R' 'bbox.R' 'read.R' 'db.R' 'sfc.R' 'sfg.R' 'sf.R'\n'bind.R' 'wkb.R' 'wkt.R' 'plot.R' 'geom-measures.R'\n'geom-predicates.R' 'geom-transformers.R' 'transform.R'\n'proj.R' 'sp.R' 'grid.R' 'arith.R' 'tidyverse.R'\n'tidyverse-vctrs.R' 'cast_sfg.R' 'cast_sfc.R' 'graticule.R'\n'datasets.R' 'aggregate.R' 'agr.R' 'maps.R' 'join.R' 'sample.R'\n'valid.R' 'collection_extract.R' 'jitter.R' 'sgbp.R'\n'spatstat.R' 'stars.R' 'crop.R' 'gdal_utils.R' 'nearest.R'\n'normalize.R' 'sf-package.R' 'defunct.R' 'z_range.R'\n'm_range.R' 'shift_longitude.R' 'make_grid.R' 's2.R' 'terra.R'\n'geos-overlayng.R' 'break_antimeridian.R'",
+        "Config/roxygen2/version": "8.0.0",
+        "NeedsCompilation": "yes",
+        "Packaged": "2026-05-05 13:13:39 UTC; edzer",
+        "Author": "Edzer Pebesma [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-8049-7069>),\n  Roger Bivand [ctb] (ORCID: <https://orcid.org/0000-0003-2392-6140>),\n  Etienne Racine [ctb],\n  Michael Sumner [ctb],\n  Ian Cook [ctb],\n  Tim Keitt [ctb],\n  Robin Lovelace [ctb],\n  Hadley Wickham [ctb],\n  Jeroen Ooms [ctb] (ORCID: <https://orcid.org/0000-0002-4035-0289>),\n  Kirill Müller [ctb],\n  Thomas Lin Pedersen [ctb],\n  Dan Baston [ctb],\n  Dewey Dunnington [ctb] (ORCID: <https://orcid.org/0000-0002-9415-4582>),\n  Alexandre Courtiol [ctb] (ORCID:\n    <https://orcid.org/0000-0003-0637-2959>)",
+        "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-05-06 11:10:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-05-06 11:59:38 UTC; unix",
+        "Archs": "sf.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "sf",
+        "RemoteRef": "sf",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "1.1-1"
+      }
+    },
     "shiny": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -1825,6 +2211,75 @@
         "RemoteRef": "sourcetools",
         "RemoteRepos": "https://cran.rstudio.com",
         "RemoteSha": "0.1.7-2"
+      }
+    },
+    "sp": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "sp",
+        "Version": "2.2-1",
+        "Title": "Classes and Methods for Spatial Data",
+        "Authors@R": "c(person(\"Edzer\", \"Pebesma\", role = c(\"aut\", \"cre\"),\n\t\t\t\temail = \"edzer.pebesma@uni-muenster.de\"),\n\t\t\tperson(\"Roger\", \"Bivand\", role = \"aut\",\n            \temail = \"Roger.Bivand@nhh.no\"),\n\t\t\tperson(\"Barry\", \"Rowlingson\", role = \"ctb\"),\n\t\t\tperson(\"Virgilio\", \"Gomez-Rubio\", role = \"ctb\"),\n\t\t\tperson(\"Robert\", \"Hijmans\", role = \"ctb\"),\n\t\t\tperson(\"Michael\", \"Sumner\", role = \"ctb\"),\n\t\t\tperson(\"Don\", \"MacQueen\", role = \"ctb\"),\n\t\t\tperson(\"Jim\", \"Lemon\", role = \"ctb\"),\n                        person(\"Finn\", \"Lindgren\", role = \"ctb\"),\n\t\t\tperson(\"Josh\", \"O'Brien\", role = \"ctb\"),\n\t\t\tperson(\"Joseph\", \"O'Rourke\", role = \"ctb\"),\n            person(\"Patrick\", \"Hausmann\", role = \"ctb\"),\n            person(\"Sebastian\", \"Meyer\", role = \"ctb\"))",
+        "Depends": "R (>= 3.5.0), methods",
+        "Imports": "utils, stats, graphics, grDevices, lattice, grid",
+        "Suggests": "RColorBrewer, gstat, deldir, knitr, maps, mapview, rmarkdown,\nsf, terra, raster",
+        "Description": "Classes and methods for spatial\n  data; the classes document where the spatial location information\n  resides, for 2D or 3D data. Utility functions are provided, e.g. for\n  plotting data as maps, spatial selection, as well as methods for\n  retrieving coordinates, for subsetting, print, summary, etc. From this\n  version, 'rgdal', 'maptools', and 'rgeos' are no longer used at all,\n  see <https://r-spatial.org/r/2023/05/15/evolution4.html> for details.",
+        "License": "GPL (>= 2)",
+        "URL": "https://github.com/edzer/sp/ https://edzer.github.io/sp/",
+        "BugReports": "https://github.com/edzer/sp/issues",
+        "Collate": "bpy.colors.R AAA.R Class-CRS.R CRS-methods.R Class-Spatial.R\nSpatial-methods.R projected.R Class-SpatialPoints.R\nSpatialPoints-methods.R Class-SpatialPointsDataFrame.R\nSpatialPointsDataFrame-methods.R Class-SpatialMultiPoints.R\nSpatialMultiPoints-methods.R\nClass-SpatialMultiPointsDataFrame.R\nSpatialMultiPointsDataFrame-methods.R Class-GridTopology.R\nClass-SpatialGrid.R Class-SpatialGridDataFrame.R\nClass-SpatialLines.R SpatialLines-methods.R\nClass-SpatialLinesDataFrame.R SpatialLinesDataFrame-methods.R\nClass-SpatialPolygons.R Class-SpatialPolygonsDataFrame.R\nSpatialPolygons-methods.R SpatialPolygonsDataFrame-methods.R\nGridTopology-methods.R SpatialGrid-methods.R\nSpatialGridDataFrame-methods.R SpatialPolygons-internals.R\npoint.in.polygon.R SpatialPolygons-displayMethods.R zerodist.R\nimage.R stack.R bubble.R mapasp.R select.spatial.R gridded.R\nasciigrid.R spplot.R over.R spsample.R recenter.R dms.R\ngridlines.R spdists.R rbind.R flipSGDF.R chfids.R loadmeuse.R\ncompassRose.R surfaceArea.R spOptions.R subset.R disaggregate.R\nsp_spat1.R merge.R aggregate.R elide.R sp2Mondrian.R",
+        "VignetteBuilder": "knitr",
+        "NeedsCompilation": "yes",
+        "Packaged": "2026-02-12 22:13:59 UTC; edzer",
+        "Author": "Edzer Pebesma [aut, cre],\n  Roger Bivand [aut],\n  Barry Rowlingson [ctb],\n  Virgilio Gomez-Rubio [ctb],\n  Robert Hijmans [ctb],\n  Michael Sumner [ctb],\n  Don MacQueen [ctb],\n  Jim Lemon [ctb],\n  Finn Lindgren [ctb],\n  Josh O'Brien [ctb],\n  Joseph O'Rourke [ctb],\n  Patrick Hausmann [ctb],\n  Sebastian Meyer [ctb]",
+        "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-02-13 10:30:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 15:48:47 UTC; unix",
+        "Archs": "sp.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "sp",
+        "RemoteRef": "sp",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "2.2-1"
+      }
+    },
+    "terra": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "terra",
+        "Type": "Package",
+        "Title": "Spatial Data Analysis",
+        "Version": "1.9-27",
+        "Date": "2026-05-09",
+        "Depends": "R (>= 3.5.0), methods",
+        "Suggests": "parallel, tinytest, ncdf4, sf (>= 0.9-8), deldir, XML,\nleaflet (>= 2.2.1), htmlwidgets, future, future.apply",
+        "LinkingTo": "Rcpp",
+        "Imports": "Rcpp (>= 1.0-10)",
+        "SystemRequirements": "C++17, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>=\n4.9.3), TBB, sqlite3",
+        "Encoding": "UTF-8",
+        "Language": "en-US",
+        "Maintainer": "Robert J. Hijmans <r.hijmans@gmail.com>",
+        "Description": "Methods for spatial data analysis with vector (points, lines, polygons) and raster (grid) data. Methods for vector data include geometric operations such as intersect and buffer. Raster methods include local, focal, global, zonal and geometric operations. The predict and interpolate methods facilitate the use of regression type (interpolation, machine learning) models for spatial prediction, including with satellite remote sensing data. Processing of very large files is supported. See the manual and tutorials on <https://rspatial.org/> to get started.",
+        "License": "GPL (>= 3)",
+        "URL": "https://rspatial.org/, https://rspatial.github.io/terra/",
+        "BugReports": "https://github.com/rspatial/terra/issues",
+        "LazyLoad": "yes",
+        "Authors@R": "c(\n\tperson(\"Robert J.\", \"Hijmans\", role=c(\"cre\", \"aut\"),  \n\t\t\temail=\"r.hijmans@gmail.com\", comment=c(ORCID=\"0000-0001-5872-2872\")),\t\t\t\n    person(\"Andrew\", \"Brown\", role=\"aut\", comment=c(ORCID=\"0000-0002-4565-533X\")),\n    person(\"Márcia\", \"Barbosa\", role=\"aut\", comment=c(ORCID=\"0000-0001-8972-7713\")),\n    person(\"Krzysztof\", \"Dyba\", role=\"ctb\", comment=c(ORCID=\"0000-0002-8614-3816\")),\n    person(\"Roger\", \"Bivand\", role=\"ctb\", comment=c(ORCID=\"0000-0003-2392-6140\")),\n    person(\"Michael\", \"Chirico\", role=\"ctb\", comment=c(ORCID=\"0000-0003-0787-087X\")),\n    person(\"Emanuele\", \"Cordano\", role=\"ctb\",comment=c(ORCID=\"0000-0002-3508-5898\")),\n    person(\"Edzer\", \"Pebesma\", role=\"ctb\", comment=c(ORCID=\"0000-0001-8049-7069\")),\n    person(\"Barry\", \"Rowlingson\", role=\"ctb\", comment=c(ORCID=\"0000-0002-8586-6625\")),\n    person(\"Michael D.\", \"Sumner\", role=\"ctb\", comment=c(ORCID=\"0000-0002-2471-7511\")))",
+        "NeedsCompilation": "yes",
+        "Packaged": "2026-05-09 12:25:47 UTC; rhijm",
+        "Author": "Robert J. Hijmans [cre, aut] (ORCID:\n    <https://orcid.org/0000-0001-5872-2872>),\n  Andrew Brown [aut] (ORCID: <https://orcid.org/0000-0002-4565-533X>),\n  Márcia Barbosa [aut] (ORCID: <https://orcid.org/0000-0001-8972-7713>),\n  Krzysztof Dyba [ctb] (ORCID: <https://orcid.org/0000-0002-8614-3816>),\n  Roger Bivand [ctb] (ORCID: <https://orcid.org/0000-0003-2392-6140>),\n  Michael Chirico [ctb] (ORCID: <https://orcid.org/0000-0003-0787-087X>),\n  Emanuele Cordano [ctb] (ORCID: <https://orcid.org/0000-0002-3508-5898>),\n  Edzer Pebesma [ctb] (ORCID: <https://orcid.org/0000-0001-8049-7069>),\n  Barry Rowlingson [ctb] (ORCID: <https://orcid.org/0000-0002-8586-6625>),\n  Michael D. Sumner [ctb] (ORCID:\n    <https://orcid.org/0000-0002-2471-7511>)",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-05-10 05:10:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-05-10 08:22:51 UTC; unix",
+        "Archs": "terra.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "terra",
+        "RemoteRef": "terra",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "1.9-27"
       }
     },
     "tibble": {
@@ -1932,6 +2387,42 @@
         "RemoteRef": "tinytex",
         "RemoteRepos": "https://cran.rstudio.com",
         "RemoteSha": "0.59"
+      }
+    },
+    "units": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "units",
+        "Version": "1.0-1",
+        "Title": "Measurement Units for R Vectors",
+        "Authors@R": "c(person(\"Edzer\", \"Pebesma\", role = c(\"aut\", \"cre\"), email = \"edzer.pebesma@uni-muenster.de\", comment = c(ORCID = \"0000-0001-8049-7069\")),\n    person(\"Thomas\", \"Mailund\", role = \"aut\", email = \"mailund@birc.au.dk\"),\n    person(\"Tomasz\", \"Kalinowski\", role = \"aut\"),\n    person(\"James\", \"Hiebert\", role = \"ctb\"),\n    person(\"Iñaki\", \"Ucar\", role = \"aut\", email = \"iucar@fedoraproject.org\", comment = c(ORCID = \"0000-0001-6403-5550\")),\n    person(\"Thomas Lin\", \"Pedersen\", role = \"ctb\")\n    )",
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "Rcpp",
+        "LinkingTo": "Rcpp (>= 1.1.0)",
+        "Suggests": "NISTunits, measurements, xml2, magrittr, pillar (>= 1.3.0),\ndplyr (>= 1.0.0), vctrs (>= 0.3.1), ggplot2 (> 3.2.1), testthat\n(>= 3.0.0), vdiffr, knitr, rvest, rmarkdown",
+        "VignetteBuilder": "knitr",
+        "Description": "Support for measurement units in R vectors, matrices\n    and arrays: automatic propagation, conversion, derivation\n    and simplification of units; raising errors in case of unit\n    incompatibility. Compatible with the POSIXct, Date and difftime \n    classes. Uses the UNIDATA udunits library and unit database for \n    unit compatibility checking and conversion.\n    Documentation about 'units' is provided in the paper by Pebesma, Mailund &\n    Hiebert (2016, <doi:10.32614/RJ-2016-061>), included in this package as a\n    vignette; see 'citation(\"units\")' for details.",
+        "SystemRequirements": "udunits-2",
+        "License": "GPL-2",
+        "URL": "https://r-quantities.github.io/units/,\nhttps://github.com/r-quantities/units",
+        "BugReports": "https://github.com/r-quantities/units/issues",
+        "RoxygenNote": "7.3.3",
+        "Encoding": "UTF-8",
+        "Config/testthat/edition": "3",
+        "NeedsCompilation": "yes",
+        "Packaged": "2026-03-09 14:34:42 UTC; edzer",
+        "Author": "Edzer Pebesma [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-8049-7069>),\n  Thomas Mailund [aut],\n  Tomasz Kalinowski [aut],\n  James Hiebert [ctb],\n  Iñaki Ucar [aut] (ORCID: <https://orcid.org/0000-0001-6403-5550>),\n  Thomas Lin Pedersen [ctb]",
+        "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-03-11 11:20:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 15:40:45 UTC; unix",
+        "Archs": "units.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "units",
+        "RemoteRef": "units",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "1.0-1"
       }
     },
     "utf8": {
@@ -2073,6 +2564,39 @@
         "RemoteSha": "3.0.2"
       }
     },
+    "wk": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "wk",
+        "Title": "Lightweight Well-Known Geometry Parsing",
+        "Version": "0.9.5",
+        "Authors@R": "\n    c(\n      person(given = \"Dewey\",\n             family = \"Dunnington\",\n             role = c(\"aut\", \"cre\"),\n             email = \"dewey@fishandwhistle.net\",\n             comment = c(ORCID = \"0000-0002-9415-4582\")),\n       person(given = \"Edzer\",\n              family = \"Pebesma\",\n              role = c(\"aut\"),\n              email = \"edzer.pebesma@uni-muenster.de\",\n              comment = c(ORCID = \"0000-0001-8049-7069\")),\n      person(given = \"Anthony\",\n             family = \"North\",\n             email = \"anthony.jl.north@gmail.com\",\n             role = c(\"ctb\"))\n    )",
+        "Maintainer": "Dewey Dunnington <dewey@fishandwhistle.net>",
+        "Description": "Provides a minimal R and C++ API for parsing\n  well-known binary and well-known text representation of\n  geometries to and from R-native formats.\n  Well-known binary is compact\n  and fast to parse; well-known text is human-readable\n  and is useful for writing tests. These formats are\n  useful in R only if the information they contain can be\n  accessed in R, for which high-performance functions\n  are provided here.",
+        "License": "MIT + file LICENSE",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.3.2",
+        "Suggests": "testthat (>= 3.0.0), vctrs (>= 0.3.0), sf, tibble, readr",
+        "URL": "https://paleolimbot.github.io/wk/,\nhttps://github.com/paleolimbot/wk",
+        "BugReports": "https://github.com/paleolimbot/wk/issues",
+        "Config/testthat/edition": "3",
+        "Depends": "R (>= 2.10)",
+        "LazyData": "true",
+        "NeedsCompilation": "yes",
+        "Packaged": "2025-12-18 03:40:52 UTC; deweydunnington",
+        "Author": "Dewey Dunnington [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-9415-4582>),\n  Edzer Pebesma [aut] (ORCID: <https://orcid.org/0000-0001-8049-7069>),\n  Anthony North [ctb]",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-12-18 06:10:16 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 15:40:40 UTC; unix",
+        "Archs": "wk.so.dSYM",
+        "RemoteType": "standard",
+        "RemotePkgRef": "wk",
+        "RemoteRef": "wk",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "0.9.5"
+      }
+    },
     "xfun": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -2176,11 +2700,95 @@
     ".claude/settings.local.json": {
       "checksum": "42b44ba5c0e8be4cb4861db409484c25"
     },
+    ".claude/worktrees/fervent-nash-1a4f35/.claude/settings.local.json": {
+      "checksum": "5ad970cd7f0eae53cf65b4c891fa7738"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/app.R": {
+      "checksum": "0b4e22e75d6b3000bf2d34bf5641686f"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/ExampleData.csv": {
+      "checksum": "8ee7516c667a06016e4bc0ad14e982fa"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/HotspotGuide.pdf": {
+      "checksum": "de51abad6130538394f8e20438084c5e"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/HotspotGuide.qmd": {
+      "checksum": "1d6ad346dbe0e9fc1cdd4dcf3dcbb055"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotDataInput.png": {
+      "checksum": "e3690832cacefd925d39d2b13cd4f289"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotDataPreview.png": {
+      "checksum": "c25959115035ff9ba9bf36721436c4ef"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotModelPlot.png": {
+      "checksum": "fefc2433da21b5262fc61a172832c889"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotPredHist.png": {
+      "checksum": "07ffee7ee4f4cc46820453b7290bf74f"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotPredTable.png": {
+      "checksum": "eea26e50abc3be4b5789f0ef4de11762"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotSimSettings.png": {
+      "checksum": "dc9073b6eed338bc7e8dae1a07ea9b86"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotSiteSelection.png": {
+      "checksum": "0942993fb4ebd5e55b468cb9375aeb56"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotSiteWarnings.png": {
+      "checksum": "940200af29dca300942a1281a63851d4"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/HotspotGuide/Images/HotspotValidateSelection.png": {
+      "checksum": "7ebc5d209faf340f2caa2cf9bde0c889"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/memory/MEMORY.md": {
+      "checksum": "8f184ba02d162bf57649bb1e149d31ba"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/modelscript.R": {
+      "checksum": "224834fb752a44717acd0ba79da5c78a"
+    },
+    ".claude/worktrees/fervent-nash-1a4f35/README.Rmd": {
+      "checksum": "4d7ce9d98587b6047f4615b3926ffaba"
+    },
     "app.R": {
-      "checksum": "900e2df5fa996bb25e4f3f0363273346"
+      "checksum": "b67e835ed3766e3e94bdb3a6820d5081"
     },
     "ExampleData.csv": {
       "checksum": "8ee7516c667a06016e4bc0ad14e982fa"
+    },
+    "HotspotGuide/HotspotGuide.pdf": {
+      "checksum": "8c596f1cc7e2ad0701c79bca45711931"
+    },
+    "HotspotGuide/HotspotGuide.qmd": {
+      "checksum": "7573e0f8d05c44a652626c2f2f8203cc"
+    },
+    "HotspotGuide/Images/HotspotDataInput.png": {
+      "checksum": "e3690832cacefd925d39d2b13cd4f289"
+    },
+    "HotspotGuide/Images/HotspotDataPreview.png": {
+      "checksum": "c25959115035ff9ba9bf36721436c4ef"
+    },
+    "HotspotGuide/Images/HotspotModelPlot.png": {
+      "checksum": "fefc2433da21b5262fc61a172832c889"
+    },
+    "HotspotGuide/Images/HotspotPredHist.png": {
+      "checksum": "07ffee7ee4f4cc46820453b7290bf74f"
+    },
+    "HotspotGuide/Images/HotspotPredTable.png": {
+      "checksum": "eea26e50abc3be4b5789f0ef4de11762"
+    },
+    "HotspotGuide/Images/HotspotSimSettings.png": {
+      "checksum": "dc9073b6eed338bc7e8dae1a07ea9b86"
+    },
+    "HotspotGuide/Images/HotspotSiteSelection.png": {
+      "checksum": "0942993fb4ebd5e55b468cb9375aeb56"
+    },
+    "HotspotGuide/Images/HotspotSiteWarnings.png": {
+      "checksum": "940200af29dca300942a1281a63851d4"
+    },
+    "HotspotGuide/Images/HotspotValidateSelection.png": {
+      "checksum": "7ebc5d209faf340f2caa2cf9bde0c889"
     },
     "memory/MEMORY.md": {
       "checksum": "8f184ba02d162bf57649bb1e149d31ba"
@@ -2190,6 +2798,534 @@
     },
     "README.Rmd": {
       "checksum": "4d7ce9d98587b6047f4615b3926ffaba"
+    },
+    "STATS19 Data/Aberdeen_City_clusters.csv": {
+      "checksum": "405c7f9230fa1d4e1cc72ab7bc408cdf"
+    },
+    "STATS19 Data/Aberdeenshire_clusters.csv": {
+      "checksum": "ab37342e1ffd0d74da4b33ab3460d97d"
+    },
+    "STATS19 Data/Angus_clusters.csv": {
+      "checksum": "8ef2062e28a2024a78272f1587f701cd"
+    },
+    "STATS19 Data/Argyll_and_Bute_clusters.csv": {
+      "checksum": "0176ffa1d2eefd2ef7cbe4fe833f9730"
+    },
+    "STATS19 Data/Barking_and_Dagenham_clusters.csv": {
+      "checksum": "417d721dcfbdf34dbfd0398e77b86c5f"
+    },
+    "STATS19 Data/Barnet_clusters.csv": {
+      "checksum": "e61d14659a0cd6480fcbf4da24faf829"
+    },
+    "STATS19 Data/Barnsley_clusters.csv": {
+      "checksum": "ed371aee8ec7e9900a4c43941bfda97e"
+    },
+    "STATS19 Data/Bath_and_North_East_Somerset_clusters.csv": {
+      "checksum": "186cc70c2e3a8d6829ac414d3c51174e"
+    },
+    "STATS19 Data/Bedford_clusters.csv": {
+      "checksum": "b0acbb5e6906d15e5596efe15e47d27b"
+    },
+    "STATS19 Data/Bexley_clusters.csv": {
+      "checksum": "c3a14c58ec501e01d63eae12df022962"
+    },
+    "STATS19 Data/Birmingham_clusters.csv": {
+      "checksum": "e885744d8c3aa3e002cd1ea19572dc96"
+    },
+    "STATS19 Data/Blackburn_with_Darwen_clusters.csv": {
+      "checksum": "efa8b499299cac35b1ac7a6795615b42"
+    },
+    "STATS19 Data/Blackpool_clusters.csv": {
+      "checksum": "bf7c2860d4c28edee77ddb8154c41e83"
+    },
+    "STATS19 Data/Blaenau_Gwent_clusters.csv": {
+      "checksum": "5bf6eeed78d6c1e6690d04cbf5285d12"
+    },
+    "STATS19 Data/Bolton_clusters.csv": {
+      "checksum": "6b8a3cad483d82144294705bac84d9e3"
+    },
+    "STATS19 Data/Bracknell_Forest_clusters.csv": {
+      "checksum": "cdf0b69a3f672d0cf69b0066b3fb4bbe"
+    },
+    "STATS19 Data/Bradford_clusters.csv": {
+      "checksum": "88b316766eab0bd2f93c77241c5a93e0"
+    },
+    "STATS19 Data/Brent_clusters.csv": {
+      "checksum": "0aeacf940597a1ac51d0f3fa147be8b0"
+    },
+    "STATS19 Data/Bridgend_clusters.csv": {
+      "checksum": "52704869e1ea3974158e8aadac2751c2"
+    },
+    "STATS19 Data/Brighton_and_Hove_clusters.csv": {
+      "checksum": "cf0248edf2e0e75b5e85df2b7c3f8234"
+    },
+    "STATS19 Data/Bristol_clusters.csv": {
+      "checksum": "75a7758775f5d9286824633edc903d8b"
+    },
+    "STATS19 Data/Bromley_clusters.csv": {
+      "checksum": "8c5b21299c8eec3a8f180512b45427a2"
+    },
+    "STATS19 Data/Bury_clusters.csv": {
+      "checksum": "cf2c136883aeed1bbbbf3bfd16b87986"
+    },
+    "STATS19 Data/Caerphilly_clusters.csv": {
+      "checksum": "b00a81a66d3665c25eb11bcdcc4462f5"
+    },
+    "STATS19 Data/Calderdale_clusters.csv": {
+      "checksum": "c878bf17d14a79a07f74ca93b7ed7fb8"
+    },
+    "STATS19 Data/Camden_clusters.csv": {
+      "checksum": "5ca63ecc6e5b09a7c30a1135b0dc9fcc"
+    },
+    "STATS19 Data/Cardiff_clusters.csv": {
+      "checksum": "56e24bd32531fe20ea1793f42e728858"
+    },
+    "STATS19 Data/Carmarthenshire_clusters.csv": {
+      "checksum": "2a5d813d10fdffc217b4709653f5dfde"
+    },
+    "STATS19 Data/Central_Bedfordshire_clusters.csv": {
+      "checksum": "ea03276b9d189d4a6c226a99c1069954"
+    },
+    "STATS19 Data/Ceredigion_clusters.csv": {
+      "checksum": "9b2a9f0eb19b39657a4e7ad22c2d1f8e"
+    },
+    "STATS19 Data/Cheshire_East_clusters.csv": {
+      "checksum": "01f526e5ba38bbb6f5ef9e0177775134"
+    },
+    "STATS19 Data/Cheshire_West_and_Chester_clusters.csv": {
+      "checksum": "6fd8e4e1049525f7380a80fbb72962ed"
+    },
+    "STATS19 Data/City_of_Edinburgh_clusters.csv": {
+      "checksum": "01774ad85f8c318d6f27471dc663b65b"
+    },
+    "STATS19 Data/City_of_London_clusters.csv": {
+      "checksum": "cc4f08c3f102beb9b34214f6dce3fcbd"
+    },
+    "STATS19 Data/Clackmannanshire_clusters.csv": {
+      "checksum": "0328ff138d270d17bb604346bc48225e"
+    },
+    "STATS19 Data/Conwy_clusters.csv": {
+      "checksum": "592fc8f3e70d880bdc75e1e79230d148"
+    },
+    "STATS19 Data/Cornwall_clusters.csv": {
+      "checksum": "328c750f000ff9ec3565e82561449707"
+    },
+    "STATS19 Data/Coventry_clusters.csv": {
+      "checksum": "09f633d1ee124d165115daf9de531cce"
+    },
+    "STATS19 Data/Croydon_clusters.csv": {
+      "checksum": "8b13b1bcc4337506361c174bb1d1f41c"
+    },
+    "STATS19 Data/Cumberland_clusters.csv": {
+      "checksum": "4338ef4bc8b5bebb81957fa882fc5d79"
+    },
+    "STATS19 Data/Darlington_clusters.csv": {
+      "checksum": "b96c137df2b168ba664ac07612964d12"
+    },
+    "STATS19 Data/Denbighshire_clusters.csv": {
+      "checksum": "1103c9eed99ea17983ddcd366b67fae5"
+    },
+    "STATS19 Data/Derby_clusters.csv": {
+      "checksum": "0983f5ced071c7a4182ebb2d589237ea"
+    },
+    "STATS19 Data/Doncaster_clusters.csv": {
+      "checksum": "e2336e762ac947de629b61faf2f80dd4"
+    },
+    "STATS19 Data/Dudley_clusters.csv": {
+      "checksum": "c6eea88cef80ce2a8478f97950230f1f"
+    },
+    "STATS19 Data/Dumfries_and_Galloway_clusters.csv": {
+      "checksum": "c105737ea8d621da31da5341fece0a98"
+    },
+    "STATS19 Data/Dundee_City_clusters.csv": {
+      "checksum": "a4c8dfbec7a9d1eed534db6885c1f979"
+    },
+    "STATS19 Data/Durham_clusters.csv": {
+      "checksum": "0ebb9bfb29063adfdc8757933bdfbaed"
+    },
+    "STATS19 Data/Ealing_clusters.csv": {
+      "checksum": "f7ded2b7364d2742c9a672d3f92373ec"
+    },
+    "STATS19 Data/East_Ayrshire_clusters.csv": {
+      "checksum": "695f2c396b751680bb9db9ddab06c455"
+    },
+    "STATS19 Data/East_Dunbartonshire_clusters.csv": {
+      "checksum": "ed3b76d3d55e93b030b468baf113081f"
+    },
+    "STATS19 Data/East_Lothian_clusters.csv": {
+      "checksum": "61fb9e84c71ff174ae2a355f2127a908"
+    },
+    "STATS19 Data/East_Renfrewshire_clusters.csv": {
+      "checksum": "a2d756167fb0cadf06532274325999e2"
+    },
+    "STATS19 Data/East_Riding_of_Yorkshire_clusters.csv": {
+      "checksum": "71889fb0b6f25b3d6d65f13ac8b5f0d2"
+    },
+    "STATS19 Data/EHEATHROW_clusters.csv": {
+      "checksum": "c9df9ff062e73bf8925dd9d2a9172e7b"
+    },
+    "STATS19 Data/Enfield_clusters.csv": {
+      "checksum": "de6f97ab20873b973a0d30fc20aae9f9"
+    },
+    "STATS19 Data/Falkirk_clusters.csv": {
+      "checksum": "143a886c9466b53e48a8502bdcdf1a8f"
+    },
+    "STATS19 Data/Fife_clusters.csv": {
+      "checksum": "8de26338b1d9098a54a28842b8329769"
+    },
+    "STATS19 Data/Flintshire_clusters.csv": {
+      "checksum": "0694b593205db5354ae7989446b5e554"
+    },
+    "STATS19 Data/Greenwich_clusters.csv": {
+      "checksum": "056e39709901c02900cd4d535eb18b65"
+    },
+    "STATS19 Data/Gwynedd_clusters.csv": {
+      "checksum": "bbda561fd543ca86797eb08a027276af"
+    },
+    "STATS19 Data/Hackney_clusters.csv": {
+      "checksum": "a40ed59e548a3ee06f73a646dbafcf52"
+    },
+    "STATS19 Data/Halton_clusters.csv": {
+      "checksum": "f4e686d32f60e6a0f459a997f553102e"
+    },
+    "STATS19 Data/Hammersmith_and_Fulham_clusters.csv": {
+      "checksum": "5baf461d2b6e7001111b48fc9af6d2e5"
+    },
+    "STATS19 Data/Haringey_clusters.csv": {
+      "checksum": "af3ebce86204265fec6f346117ae5ecf"
+    },
+    "STATS19 Data/Harrow_clusters.csv": {
+      "checksum": "5fac980a7dee6465c393f026b074e320"
+    },
+    "STATS19 Data/Hartlepool_clusters.csv": {
+      "checksum": "2322da9bcc22463eba6d30b82ae06ae0"
+    },
+    "STATS19 Data/Havering_clusters.csv": {
+      "checksum": "64bede68abb186616149fa1b70cad30d"
+    },
+    "STATS19 Data/Herefordshire_clusters.csv": {
+      "checksum": "817f495b1780101b9ad32b95ecb96ed8"
+    },
+    "STATS19 Data/Highland_clusters.csv": {
+      "checksum": "8deb9b597e7544a8f40c2d6eae1b8142"
+    },
+    "STATS19 Data/Hillingdon_clusters.csv": {
+      "checksum": "fe72ae916e112c6fd0b66478e790b6be"
+    },
+    "STATS19 Data/Hounslow_clusters.csv": {
+      "checksum": "3a5dbb037fc1920752ba5547377fba0e"
+    },
+    "STATS19 Data/Inverclyde_clusters.csv": {
+      "checksum": "c21fc9d59f7643bdd66169bb9ea8fae8"
+    },
+    "STATS19 Data/Isle_of_Anglesey_clusters.csv": {
+      "checksum": "b26f5a6e7aa9fbd427a345e2a48b23b5"
+    },
+    "STATS19 Data/Isle_of_Wight_clusters.csv": {
+      "checksum": "a3623145f8f46614464453bbee44e454"
+    },
+    "STATS19 Data/Islington_clusters.csv": {
+      "checksum": "5536e6bd18d5de4edf6459b2964c28f0"
+    },
+    "STATS19 Data/Kensington_and_Chelsea_clusters.csv": {
+      "checksum": "39394e0be995675cb84046e873119160"
+    },
+    "STATS19 Data/Kingston_upon_Hull_clusters.csv": {
+      "checksum": "6aebb96317208090d9b4bc42a9d75ce5"
+    },
+    "STATS19 Data/Kingston_upon_Thames_clusters.csv": {
+      "checksum": "23d02ec8dbc24794a9db32ff3e11d9ed"
+    },
+    "STATS19 Data/Kirklees_clusters.csv": {
+      "checksum": "0af3e164472f910cc103faccbf449386"
+    },
+    "STATS19 Data/Knowsley_clusters.csv": {
+      "checksum": "9efbf108e64f7d9c8eb78c15038713a7"
+    },
+    "STATS19 Data/Lambeth_clusters.csv": {
+      "checksum": "ecfcfc47cc871fae277c081818d3defc"
+    },
+    "STATS19 Data/Leeds_clusters.csv": {
+      "checksum": "dc14e88c2128c6ef709b0b2767266b79"
+    },
+    "STATS19 Data/Leicester_clusters.csv": {
+      "checksum": "d655dfde2bf235d7ae7387b82dd9b8e1"
+    },
+    "STATS19 Data/Lewisham_clusters.csv": {
+      "checksum": "3f8483e0ea8b653516ff52f5d1b9fbe1"
+    },
+    "STATS19 Data/Liverpool_clusters.csv": {
+      "checksum": "b1ace7805fe820bc3bf4bf948dd8f33b"
+    },
+    "STATS19 Data/Luton_clusters.csv": {
+      "checksum": "3eb4beb1923debf792a8386d2ec57087"
+    },
+    "STATS19 Data/Manchester_clusters.csv": {
+      "checksum": "817245085f119c5368b54e6a6b211756"
+    },
+    "STATS19 Data/Medway_clusters.csv": {
+      "checksum": "fb274f2f2bfb54e987bd93ddf6a147de"
+    },
+    "STATS19 Data/Merthyr_Tydfil_clusters.csv": {
+      "checksum": "0e5d59c6aefb563e1da2e1f0c098eeca"
+    },
+    "STATS19 Data/Merton_clusters.csv": {
+      "checksum": "d29a1e003768e23a85b1f22d55352f2a"
+    },
+    "STATS19 Data/Middlesbrough_clusters.csv": {
+      "checksum": "0c7f26e8fe36a31852ecbefc0ab7921b"
+    },
+    "STATS19 Data/Midlothian_clusters.csv": {
+      "checksum": "46d993d9782406dbf3153c586245f309"
+    },
+    "STATS19 Data/Milton_Keynes_clusters.csv": {
+      "checksum": "7aa2f9380479181f2380ba72a1f38b9e"
+    },
+    "STATS19 Data/Monmouthshire_clusters.csv": {
+      "checksum": "707d2caeb2991e22eade1d58f409c42e"
+    },
+    "STATS19 Data/Moray_clusters.csv": {
+      "checksum": "6101d482ee5b8ff5c1c41b434be88d92"
+    },
+    "STATS19 Data/Na_hEileanan_Siar_clusters.csv": {
+      "checksum": "819965dcd9bac1a4cef916d7d2eb6484"
+    },
+    "STATS19 Data/Neath_Port_Talbot_clusters.csv": {
+      "checksum": "4ae6bd55e2e6ef65bcd588db1d7423e5"
+    },
+    "STATS19 Data/Newcastle_upon_Tyne_clusters.csv": {
+      "checksum": "4200907a98339599fa0422abdc435dbd"
+    },
+    "STATS19 Data/Newham_clusters.csv": {
+      "checksum": "4a66a56973d76ed2a572aa39e7dafbc8"
+    },
+    "STATS19 Data/Newport_clusters.csv": {
+      "checksum": "ea8f5855635d10a848468286e5a8723d"
+    },
+    "STATS19 Data/North_Ayrshire_clusters.csv": {
+      "checksum": "af70871127d92760bbd6f619712c32bf"
+    },
+    "STATS19 Data/North_East_Lincolnshire_clusters.csv": {
+      "checksum": "09775855e89132cbba84646674284160"
+    },
+    "STATS19 Data/North_Lincolnshire_clusters.csv": {
+      "checksum": "ebd987949220484d35080994290cbab3"
+    },
+    "STATS19 Data/North_Somerset_clusters.csv": {
+      "checksum": "61e8540df3a11c2129a64b2cdf2dd527"
+    },
+    "STATS19 Data/North_Tyneside_clusters.csv": {
+      "checksum": "6fa32c60bba3f07bcdfe55f042004ddc"
+    },
+    "STATS19 Data/Northumberland_clusters.csv": {
+      "checksum": "012e462e071d3336e43cf4fbbc9ac215"
+    },
+    "STATS19 Data/Nottingham_clusters.csv": {
+      "checksum": "0b6dac6f1ac0c511499509c2b65d089b"
+    },
+    "STATS19 Data/Oldham_clusters.csv": {
+      "checksum": "420b726f32b5a73b94724b22afa5bc3c"
+    },
+    "STATS19 Data/Orkney_Islands_clusters.csv": {
+      "checksum": "d687a70ed21015f3c410284b79c8d67b"
+    },
+    "STATS19 Data/Pembrokeshire_clusters.csv": {
+      "checksum": "a5ab8964e3cdfa16800dbe64b3cffe8a"
+    },
+    "STATS19 Data/Perth_and_Kinross_clusters.csv": {
+      "checksum": "a25ec8e51803ec88b86fb52d3122740c"
+    },
+    "STATS19 Data/Peterborough_clusters.csv": {
+      "checksum": "c4ae5070314f1cc5cd07c1d54925f307"
+    },
+    "STATS19 Data/Plymouth_clusters.csv": {
+      "checksum": "66aa8e4089d2b15610d8bdc2690c13fb"
+    },
+    "STATS19 Data/Portsmouth_clusters.csv": {
+      "checksum": "54b6c0b64077876813c2c08ca46360a8"
+    },
+    "STATS19 Data/Powys_clusters.csv": {
+      "checksum": "900811cb4e99d2edb7eda01797a08cd6"
+    },
+    "STATS19 Data/Reading_clusters.csv": {
+      "checksum": "e744d82ec708ff18067bff2a13739ba6"
+    },
+    "STATS19 Data/Redbridge_clusters.csv": {
+      "checksum": "99d86e9b80893e21fae56089f53bb549"
+    },
+    "STATS19 Data/Redcar_and_Cleveland_clusters.csv": {
+      "checksum": "a23b06d6978641ed7170ed23e46c7fd0"
+    },
+    "STATS19 Data/Renfrewshire_clusters.csv": {
+      "checksum": "51fb17b4ba29b25773772e2b60e555b3"
+    },
+    "STATS19 Data/Rhondda_Cynon_Taf_clusters.csv": {
+      "checksum": "5c34534287a1e9995a5768611a353c36"
+    },
+    "STATS19 Data/Richmond_upon_Thames_clusters.csv": {
+      "checksum": "9bd248ce716a116ad3e47972456d6272"
+    },
+    "STATS19 Data/Rochdale_clusters.csv": {
+      "checksum": "009afc831c86196b6ae14bc497c58b63"
+    },
+    "STATS19 Data/Rotherham_clusters.csv": {
+      "checksum": "2c2b7a13d3357ba1e71ac07c5a64e4e5"
+    },
+    "STATS19 Data/Rutland_clusters.csv": {
+      "checksum": "f2f8e03c899d5bc6e3186741198df8f5"
+    },
+    "STATS19 Data/Salford_clusters.csv": {
+      "checksum": "70c907b1b938954194869addc09825b4"
+    },
+    "STATS19 Data/Sandwell_clusters.csv": {
+      "checksum": "ffa2e75964607fd9c2192a48b7ab30a8"
+    },
+    "STATS19 Data/Scottish_Borders_clusters.csv": {
+      "checksum": "1c51d00bcf982879b5164b3709101ef0"
+    },
+    "STATS19 Data/Sefton_clusters.csv": {
+      "checksum": "efa312554fad73af57c11bf00cd38356"
+    },
+    "STATS19 Data/Sheffield_clusters.csv": {
+      "checksum": "8724ccb391cfef4865c2c54bee33159a"
+    },
+    "STATS19 Data/Shetland_Islands_clusters.csv": {
+      "checksum": "62eaf843bf5391d3915dd19b08c3fecb"
+    },
+    "STATS19 Data/Slough_clusters.csv": {
+      "checksum": "d402e32d03f216ff27ce381f4ff29992"
+    },
+    "STATS19 Data/Solihull_clusters.csv": {
+      "checksum": "5b9f00b049a7a23f1bfbd6dfca12f0cb"
+    },
+    "STATS19 Data/Somerset_clusters.csv": {
+      "checksum": "cf1e3180e71aeda2b855ae94c8d3c742"
+    },
+    "STATS19 Data/South_Ayrshire_clusters.csv": {
+      "checksum": "e8a0f48b6c2250c159e4b9cf86c3607e"
+    },
+    "STATS19 Data/South_Gloucestershire_clusters.csv": {
+      "checksum": "49f094abf20549b1873959636f1abdcf"
+    },
+    "STATS19 Data/South_Lanarkshire_clusters.csv": {
+      "checksum": "4b0badcdfb4dcbad09705f35a5c57c0e"
+    },
+    "STATS19 Data/South_Tyneside_clusters.csv": {
+      "checksum": "04e1972e4de8a7e5db75fc69246968bf"
+    },
+    "STATS19 Data/Southampton_clusters.csv": {
+      "checksum": "f61c073e9889bd912ec1d939adecaec2"
+    },
+    "STATS19 Data/SouthendonSea_clusters.csv": {
+      "checksum": "c6cae21012586b0b30083b8f206bb718"
+    },
+    "STATS19 Data/Southwark_clusters.csv": {
+      "checksum": "991040fa2542082953a59256e6cbf847"
+    },
+    "STATS19 Data/St_Helens_clusters.csv": {
+      "checksum": "97313001e7b392472b03a821fbdfd0a1"
+    },
+    "STATS19 Data/Stirling_clusters.csv": {
+      "checksum": "6df7b768366407234c3f7dd546aede8c"
+    },
+    "STATS19 Data/Stockport_clusters.csv": {
+      "checksum": "3e1dec630c9d146c454f7af056cef931"
+    },
+    "STATS19 Data/StocktononTees_clusters.csv": {
+      "checksum": "4e41272f089acc947ee4248cdb430531"
+    },
+    "STATS19 Data/StokeonTrent_clusters.csv": {
+      "checksum": "5b0cbbcea21f0995b0e0a12124bd6b9c"
+    },
+    "STATS19 Data/Sunderland_clusters.csv": {
+      "checksum": "c01d878f985719203e29f7ffd9e148e2"
+    },
+    "STATS19 Data/Sutton_clusters.csv": {
+      "checksum": "cc8c6a7846822e5b365940c95a01e024"
+    },
+    "STATS19 Data/Swansea_clusters.csv": {
+      "checksum": "895438a4153587db14eed0f15b3bd80a"
+    },
+    "STATS19 Data/Swindon_clusters.csv": {
+      "checksum": "1bb1d21ec31d7b372977d4fd8e1e2e37"
+    },
+    "STATS19 Data/Tameside_clusters.csv": {
+      "checksum": "83d4ccb5cd1e4a13d4fe087927e368b6"
+    },
+    "STATS19 Data/Telford_and_Wrekin_clusters.csv": {
+      "checksum": "2582cfde7a9e992d9932efdafab0750e"
+    },
+    "STATS19 Data/Thurrock_clusters.csv": {
+      "checksum": "afd7b673a48f7116af7d2a82e9d07de7"
+    },
+    "STATS19 Data/Torbay_clusters.csv": {
+      "checksum": "e5011c36dc895fc78a9129e477f2f396"
+    },
+    "STATS19 Data/Torfaen_clusters.csv": {
+      "checksum": "2a27288c75c0d69ad0a963d996dd8be1"
+    },
+    "STATS19 Data/Tower_Hamlets_clusters.csv": {
+      "checksum": "da626c430576322ae1732c1fa8f41663"
+    },
+    "STATS19 Data/Trafford_clusters.csv": {
+      "checksum": "dc2662d4fa227e7802a744df72308d6a"
+    },
+    "STATS19 Data/Vale_of_Glamorgan_clusters.csv": {
+      "checksum": "8b93d3b081a328116e904a8daefb012f"
+    },
+    "STATS19 Data/Wakefield_clusters.csv": {
+      "checksum": "6e8455eb6de2e92c33943f84cf2c089b"
+    },
+    "STATS19 Data/Walsall_clusters.csv": {
+      "checksum": "6731a2208b7b12aedd8e1ed7dedfad18"
+    },
+    "STATS19 Data/Waltham_Forest_clusters.csv": {
+      "checksum": "a02093d1c816537ddcba625e6859f1b7"
+    },
+    "STATS19 Data/Wandsworth_clusters.csv": {
+      "checksum": "910c460e079984454da1d3a33cfe0c3e"
+    },
+    "STATS19 Data/Warrington_clusters.csv": {
+      "checksum": "12b680ba1145aa0fffad5b33007efa35"
+    },
+    "STATS19 Data/West_Berkshire_clusters.csv": {
+      "checksum": "49b72726940375c8b5089b439a60fc51"
+    },
+    "STATS19 Data/West_Dunbartonshire_clusters.csv": {
+      "checksum": "7e033769994f65a6862537545e6e078e"
+    },
+    "STATS19 Data/West_Lothian_clusters.csv": {
+      "checksum": "dc7a49646ddb40bc006e21da54f6992c"
+    },
+    "STATS19 Data/Westminster_clusters.csv": {
+      "checksum": "53ec6d55d807837c098b6fce2d712d9f"
+    },
+    "STATS19 Data/Westmorland_and_Furness_clusters.csv": {
+      "checksum": "2089059ad8f9cb3178c2b722300e4411"
+    },
+    "STATS19 Data/Wigan_clusters.csv": {
+      "checksum": "6884d0ac9b19032d888ffacf66d2e8e2"
+    },
+    "STATS19 Data/Wiltshire_clusters.csv": {
+      "checksum": "af34c6c34f241075d1ec478f6b5ca3f7"
+    },
+    "STATS19 Data/Windsor_and_Maidenhead_clusters.csv": {
+      "checksum": "ac689fc8ea96cf24a9a95b7d223b5349"
+    },
+    "STATS19 Data/Wirral_clusters.csv": {
+      "checksum": "8816c7871ad997f55295bb8470b36d23"
+    },
+    "STATS19 Data/Wokingham_clusters.csv": {
+      "checksum": "652ba78154a46ee80468d789ad2a7af2"
+    },
+    "STATS19 Data/Wolverhampton_clusters.csv": {
+      "checksum": "741c6b29a0364f0b6fdf49ded0089343"
+    },
+    "STATS19 Data/Wrexham_clusters.csv": {
+      "checksum": "e393b5306315587d6fa50e393967925f"
+    },
+    "STATS19 Data/York_clusters.csv": {
+      "checksum": "c84de59405ee5e2df1694d584a8d8942"
     }
   },
   "users": null
