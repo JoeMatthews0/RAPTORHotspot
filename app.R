@@ -909,7 +909,7 @@ server <- function(input, output, session) {
   output$warningsTable <- renderDT({
     warn_df <- warnDF()
     thr     <- as.numeric(input$threshold)
-    datatable(warn_df, rownames = FALSE, selection = "none",
+    datatable(warn_df, rownames = FALSE, selection = "single",
               options  = list(pageLength = 15, scrollX = TRUE, dom = "tip"),
               colnames = c("Site ID", "Mean Predicted",
                            paste0("P(count > ", thr, ")"), "Risk Level")) |>
@@ -959,6 +959,38 @@ server <- function(input, output, session) {
                 title   = "Risk Level",
                 opacity = 0.8)
   })
+
+  # Highlight selected row on the risk map --------------------------------
+
+  observeEvent(input$warningsTable_rows_selected, {
+    idx     <- input$warningsTable_rows_selected
+    proxy   <- leafletProxy("warningsMap")
+    proxy %>% clearGroup("highlight")
+
+    if (length(idx) > 0) {
+      warn_df <- warnDF()
+      pos     <- clusterPositions()
+      req(warn_df, pos)
+      id_col       <- input$idCol
+      selected_site <- warn_df$Site[idx]
+      site_pos      <- pos[pos[[id_col]] == selected_site, ]
+
+      proxy %>%
+        addCircleMarkers(
+          data        = site_pos,
+          lng         = ~centroid_lon,
+          lat         = ~centroid_lat,
+          group       = "highlight",
+          radius      = 14,
+          color       = "white",
+          fillColor   = "transparent",
+          fillOpacity = 0,
+          weight      = 3,
+          opacity     = 1
+        ) %>%
+        flyTo(lng = site_pos$centroid_lon, lat = site_pos$centroid_lat, zoom = 13)
+    }
+  }, ignoreNULL = FALSE)
 }
 
 shinyApp(ui = ui, server = server)
