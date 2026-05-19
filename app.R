@@ -5,6 +5,7 @@ library(ggplot2)
 library(DT)
 library(rjags)
 library(patchwork)
+library(leaflet)
 
 # Build LA choices from STATS19 Data folder at startup
 stats19_files   <- list.files("STATS19 Data", pattern = "_clusters\\.csv$")
@@ -130,7 +131,8 @@ ui <- navbarPage(
       column(8,
         h4("Data Preview"),
         p(class = "text-muted", "First 20 rows"),
-        DTOutput("dataPreview")
+        DTOutput("dataPreview"),
+        uiOutput("clusterMapUI")
       )
     ))
   ),
@@ -229,7 +231,8 @@ ui <- navbarPage(
       column(8,
         h4("Site Warning List"),
         p(class = "text-muted", "Sorted by exceedance probability (highest first)."),
-        DTOutput("warningsTable")
+        DTOutput("warningsTable"),
+        uiOutput("warningsMapUI")
       )
     ))
   )
@@ -351,7 +354,7 @@ server <- function(input, output, session) {
   # Shared helper: populate column-mapping dropdowns from a data frame
   set_col_defaults <- function(df) {
     cols  <- colnames(df)
-    id_g  <- grep("^id$|site|location", cols, ignore.case = TRUE, value = TRUE)
+    id_g  <- grep("^id$|site|location|cluster_id", cols, ignore.case = TRUE, value = TRUE)
     yr_g  <- grep("^year$|time|period",  cols, ignore.case = TRUE, value = TRUE)
     cnt_g <- grep("accident|collision|crash|count", cols, ignore.case = TRUE, value = TRUE)
     updateSelectInput(session, "idCol",    choices = cols,
@@ -843,13 +846,48 @@ server <- function(input, output, session) {
     }
   )
 
+  # Cluster positions helper -----------------------------------------------
+
+  clusterPositions <- reactive({
+    req(rv$rawData)
+    df <- rv$rawData
+    if (!all(c("centroid_lon", "centroid_lat") %in% colnames(df))) return(NULL)
+    req(input$idCol %in% colnames(df))
+    df[!duplicated(df[[input$idCol]]), c(input$idCol, "centroid_lon", "centroid_lat")]
+  })
+
+  # Cluster map on Data Upload tab ----------------------------------------
+
+  output$clusterMapUI <- renderUI({
+    req(clusterPositions())
+    tagList(br(), h4("Cluster Locations"), leafletOutput("clusterMap", height = "420px"))
+  })
+
+  output$clusterMap <- renderLeaflet({
+    pos    <- clusterPositions()
+    req(pos)
+    id_col <- input$idCol
+    leaflet(pos) %>%
+      addTiles() %>%
+      addCircleMarkers(
+        lng        = ~centroid_lon,
+        lat        = ~centroid_lat,
+        popup      = ~as.character(pos[[id_col]]),
+        label      = ~as.character(pos[[id_col]]),
+        radius     = 6,
+        color      = "#2c3e50",
+        fillColor  = "#3d5166",
+        fillOpacity = 0.7,
+        weight     = 1
+      )
+  })
+
   # Site Warnings ---------------------------------------------------------
 
-  output$warningsTable <- renderDT({
+  warnDF <- reactive({
     req(rv$mcmcResults, input$threshold)
     thr <- as.numeric(input$threshold)
-
-    warn_df <- do.call(rbind, lapply(names(rv$mcmcResults), function(s) {
+    df  <- do.call(rbind, lapply(names(rv$mcmcResults), function(s) {
       r <- rv$mcmcResults[[s]]
       if (!is.null(r$error)) {
         data.frame(Site = s, MeanPred = NA_real_, ProbExceed = NA_real_,
@@ -865,8 +903,12 @@ server <- function(input, output, session) {
                    stringsAsFactors = FALSE)
       }
     }))
-    warn_df <- warn_df[order(-warn_df$ProbExceed, na.last = TRUE), ]
+    df[order(-df$ProbExceed, na.last = TRUE), ]
+  })
 
+  output$warningsTable <- renderDT({
+    warn_df <- warnDF()
+    thr     <- as.numeric(input$threshold)
     datatable(warn_df, rownames = FALSE, selection = "none",
               options  = list(pageLength = 15, scrollX = TRUE, dom = "tip"),
               colnames = c("Site ID", "Mean Predicted",
@@ -878,6 +920,44 @@ server <- function(input, output, session) {
                   color = styleEqual(
                     c("High",   "Low"),
                     c("white",  "white"), default = "black"))
+  })
+
+  output$warningsMapUI <- renderUI({
+    req(warnDF(), clusterPositions())
+    tagList(br(), h4("Risk Map"), leafletOutput("warningsMap", height = "420px"))
+  })
+
+  output$warningsMap <- renderLeaflet({
+    warn_df <- warnDF()
+    pos     <- clusterPositions()
+    req(warn_df, pos)
+    id_col  <- input$idCol
+    merged  <- merge(warn_df, pos, by.x = "Site", by.y = id_col)
+
+    risk_colors <- c("High" = "#e74c3c", "Medium" = "#f39c12",
+                     "Low"  = "#27ae60", "Error"  = "#aaaaaa")
+    merged$color <- risk_colors[merged$Risk]
+
+    leaflet(merged) %>%
+      addTiles() %>%
+      addCircleMarkers(
+        lng         = ~centroid_lon,
+        lat         = ~centroid_lat,
+        color       = ~color,
+        fillColor   = ~color,
+        fillOpacity = 0.8,
+        weight      = 1,
+        radius      = 8,
+        popup       = ~paste0("<b>Site: ", Site, "</b><br>Risk: ", Risk,
+                              "<br>Mean Predicted: ", MeanPred,
+                              "<br>P(exceed): ", ProbExceed),
+        label       = ~as.character(Site)
+      ) %>%
+      addLegend("bottomright",
+                colors  = c("#e74c3c", "#f39c12", "#27ae60"),
+                labels  = c("High", "Medium", "Low"),
+                title   = "Risk Level",
+                opacity = 0.8)
   })
 }
 
